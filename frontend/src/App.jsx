@@ -32,10 +32,9 @@ function Layout({ theme, toggleTheme }) {
             <header className="nav">
                 <NavLink to="/" className="brand">Kunna MCP</NavLink>
                 <nav className="navlinks">
-                    <NavLink to="/" className={navClass} end>Inicio</NavLink>
-                    <NavLink to="/mcp" className={navClass}>¿Qué es MCP?</NavLink>
                     <NavLink to="/inspector" className={navClass}>Inspector</NavLink>
-                    <NavLink to="/creadora" className={navClass}>Creadora</NavLink>
+                    <NavLink to="/mcp" className={navClass}>¿Qué es MCP?</NavLink>
+                    <NavLink to="/creadora" className={navClass}>¿Por qué?</NavLink>
                 </nav>
                 <button className="icon-btn" onClick={toggleTheme} aria-label="Cambiar tema" title="Cambiar tema">
                     {theme === "dark" ? <SunIcon /> : <MoonIcon />}
@@ -52,7 +51,7 @@ function Layout({ theme, toggleTheme }) {
                     <i style={{ background: "#b2fd94" }} />
                     <i style={{ background: "#f6ed9e" }} />
                 </span>
-                <span>TFG · Cliente MCP · Universidad de Alicante</span>
+                <span>Cliente Kunna MCP · Trabajo de fin de grado · Universidad de Alicante · 2026</span>
             </footer>
         </div>
     );
