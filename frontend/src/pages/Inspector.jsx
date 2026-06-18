@@ -2,6 +2,78 @@ import { useState } from "react";
 
 const API = "http://localhost:4000/api";
 
+/* ── Helpers de esquema ────────────────────────────────────────────── */
+function schemaToFields(schema) {
+    if (!schema || !schema.properties) return [];
+    const required = new Set(schema.required || []);
+    return Object.entries(schema.properties).map(([name, prop]) => ({
+        name,
+        type: prop.type || "string",
+        description: prop.description || "",
+        required: required.has(name),
+        enum: prop.enum || null,
+        default: prop.default,
+    }));
+}
+
+function promptArgsToFields(args) {
+    if (!Array.isArray(args)) return [];
+    return args.map((a) => ({
+        name: a.name,
+        type: "string",
+        description: a.description || "",
+        required: !!a.required,
+        enum: null,
+        default: undefined,
+    }));
+}
+
+function initialValues(fields) {
+    const v = {};
+    for (const f of fields) {
+        if (f.default !== undefined) v[f.name] = String(f.default);
+        else if (f.type === "boolean") v[f.name] = "false";
+        else v[f.name] = "";
+    }
+    return v;
+}
+
+function coerceValues(fields, values) {
+    const out = {};
+    for (const f of fields) {
+        const raw = values[f.name];
+        if (raw === "" || raw === undefined) {
+            if (f.required && f.type !== "boolean") {
+                throw new Error(`El campo «${f.name}» es obligatorio`);
+            }
+            if (raw === "") continue;
+        }
+        switch (f.type) {
+            case "number":
+            case "integer": {
+                const n = Number(raw);
+                if (Number.isNaN(n)) throw new Error(`«${f.name}» debe ser un número`);
+                out[f.name] = f.type === "integer" ? Math.trunc(n) : n;
+                break;
+            }
+            case "boolean":
+                out[f.name] = raw === "true";
+                break;
+            case "object":
+            case "array":
+                try {
+                    out[f.name] = JSON.parse(raw);
+                } catch {
+                    throw new Error(`«${f.name}» debe ser JSON válido`);
+                }
+                break;
+            default:
+                out[f.name] = raw;
+        }
+    }
+    return out;
+}
+
 export default function Inspector() {
     const [form, setForm] = useState({
         transport: "http",
@@ -9,17 +81,27 @@ export default function Inspector() {
         authType: "bearer",
         token: "",
     });
-    const [status, setStatus] = useState("idle"); // idle | connecting | connected | error
+    const [status, setStatus] = useState("idle");
     const [error, setError] = useState("");
-    const [server, setServer] = useState(null);   // { serverInfo, capabilities, tools, prompts }
-    const [selected, setSelected] = useState(null);
+    const [server, setServer] = useState(null);
+
+    const [selected, setSelected] = useState(null); // { kind, item }
+    const [fieldValues, setFieldValues] = useState({});
+    const [rawMode, setRawMode] = useState(false);
     const [argsText, setArgsText] = useState("{}");
+
     const [calling, setCalling] = useState(false);
     const [result, setResult] = useState(null);
     const [callError, setCallError] = useState("");
 
     const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
     const connected = status === "connected";
+
+    const fields = selected
+        ? selected.kind === "tool"
+            ? schemaToFields(selected.item.inputSchema)
+            : promptArgsToFields(selected.item.arguments)
+        : [];
 
     async function connect() {
         setStatus("connecting");
@@ -55,31 +137,53 @@ export default function Inspector() {
         setStatus("idle");
     }
 
-    function selectTool(tool) {
-        setSelected(tool);
+    function select(kind, item) {
+        const f =
+            kind === "tool"
+                ? schemaToFields(item.inputSchema)
+                : promptArgsToFields(item.arguments);
+        setSelected({ kind, item });
+        setFieldValues(initialValues(f));
+        setArgsText("{}");
+        setRawMode(false);
         setResult(null);
         setCallError("");
-        setArgsText("{}");
     }
 
-    async function callTool() {
+    function clearSelection() {
+        setSelected(null);
+        setResult(null);
+        setCallError("");
+    }
+
+    function setField(name, value) {
+        setFieldValues((v) => ({ ...v, [name]: value }));
+    }
+
+    async function run() {
         setCalling(true);
         setCallError("");
         setResult(null);
         try {
             let args;
-            try {
-                args = JSON.parse(argsText || "{}");
-            } catch {
-                throw new Error("Los argumentos no son JSON válido");
+            if (rawMode) {
+                try {
+                    args = JSON.parse(argsText || "{}");
+                } catch {
+                    throw new Error("Los argumentos no son JSON válido");
+                }
+            } else {
+                args = coerceValues(fields, fieldValues);
             }
-            const res = await fetch(`${API}/call`, {
+
+            const endpoint = selected.kind === "tool" ? "/call" : "/prompt";
+            const res = await fetch(`${API}${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: selected.name, arguments: args }),
+                body: JSON.stringify({ name: selected.item.name, arguments: args }),
             });
             const data = await res.json();
-            if (!res.ok) throw new Error(data.cause || data.error || "Error al llamar");
+            if (!res.ok) throw new Error(data.cause || data.error || "Error en la llamada");
             setResult(data);
         } catch (e) {
             setCallError(e.message);
@@ -137,67 +241,159 @@ export default function Inspector() {
             {status === "error" && <div className="banner error">No se pudo conectar: {error}</div>}
 
             {connected && server && (
-                <main className="grid">
-                    <aside className="panel">
+                <main className={selected ? "grid split" : "grid full"}>
+                    <aside className="panel sidebar">
                         <h2>Tools <span className="count">{server.tools.length}</span></h2>
                         <ul className="list">
+                            {server.tools.length === 0 && <li className="empty">Ninguna</li>}
                             {server.tools.map((t) => (
                                 <li
                                     key={t.name}
-                                    className={selected?.name === t.name ? "item active" : "item"}
-                                    onClick={() => selectTool(t)}
+                                    className={
+                                        selected?.kind === "tool" && selected.item.name === t.name
+                                            ? "item active"
+                                            : "item"
+                                    }
+                                    onClick={() => select("tool", t)}
                                 >
                                     <code>{t.name}</code>
+                                    {t.description && <span className="item-desc">{t.description}</span>}
                                 </li>
                             ))}
                         </ul>
 
                         <h2>Prompts <span className="count">{server.prompts.length}</span></h2>
                         <ul className="list">
+                            {server.prompts.length === 0 && <li className="empty">Ninguno</li>}
                             {server.prompts.map((p) => (
-                                <li key={p.name} className="item static">
+                                <li
+                                    key={p.name}
+                                    className={
+                                        selected?.kind === "prompt" && selected.item.name === p.name
+                                            ? "item active"
+                                            : "item"
+                                    }
+                                    onClick={() => select("prompt", p)}
+                                >
                                     <code>{p.name}</code>
+                                    {p.description && <span className="item-desc">{p.description}</span>}
                                 </li>
                             ))}
                         </ul>
                     </aside>
 
-                    <section className="panel main">
-                        {!selected ? (
-                            <p className="hint">Elige una tool de la izquierda para probarla.</p>
-                        ) : (
-                            <>
-                                <h2 className="tool-title"><code>{selected.name}</code></h2>
-                                {selected.description && <p className="desc">{selected.description}</p>}
+                    {selected && (
+                        <section className="panel main">
+                            <header className="detail-head">
+                                <span className={`kind-pill kind-${selected.kind}`}>
+                                    {selected.kind === "tool" ? "Tool" : "Prompt"}
+                                </span>
+                                <h2 className="tool-title"><code>{selected.item.name}</code></h2>
+                                <button className="close-btn" onClick={clearSelection} aria-label="Cerrar" title="Cerrar">×</button>
+                            </header>
+                            {selected.item.description && (
+                                <p className="desc">{selected.item.description}</p>
+                            )}
 
-                                {selected.inputSchema && (
-                                    <details className="schema">
-                                        <summary>Ver inputSchema</summary>
-                                        <pre>{JSON.stringify(selected.inputSchema, null, 2)}</pre>
-                                    </details>
+                            <div className="params-head">
+                                <span className="params-label">Parámetros</span>
+                                {fields.length > 0 && (
+                                    <button
+                                        type="button"
+                                        className="link-btn"
+                                        onClick={() => setRawMode((m) => !m)}
+                                    >
+                                        {rawMode ? "← Volver al formulario" : "Editar como JSON"}
+                                    </button>
                                 )}
+                            </div>
 
-                                <label>Argumentos (JSON)</label>
+                            {fields.length === 0 ? (
+                                <p className="hint small">Esta {selected.kind === "tool" ? "tool" : "prompt"} no recibe parámetros.</p>
+                            ) : rawMode ? (
                                 <textarea
                                     value={argsText}
                                     onChange={(e) => setArgsText(e.target.value)}
-                                    rows={6}
+                                    rows={8}
                                     spellCheck={false}
+                                    placeholder='{ "clave": "valor" }'
                                 />
-                                <button onClick={callTool} disabled={calling}>
-                                    {calling ? "Llamando…" : "Llamar a la tool"}
-                                </button>
+                            ) : (
+                                <div className="form-fields">
+                                    {fields.map((f) => (
+                                        <div className="field" key={f.name}>
+                                            <label className="field-label">
+                                                <span className="field-name">{f.name}</span>
+                                                <span className="field-type">{f.type}</span>
+                                                {f.required && <span className="field-req">obligatorio</span>}
+                                            </label>
+                                            {f.description && (
+                                                <p className="field-desc">{f.description}</p>
+                                            )}
+                                            {f.enum ? (
+                                                <select
+                                                    value={fieldValues[f.name] ?? ""}
+                                                    onChange={(e) => setField(f.name, e.target.value)}
+                                                >
+                                                    <option value="">— elige —</option>
+                                                    {f.enum.map((opt) => (
+                                                        <option key={opt} value={opt}>{opt}</option>
+                                                    ))}
+                                                </select>
+                                            ) : f.type === "boolean" ? (
+                                                <select
+                                                    value={fieldValues[f.name] ?? "false"}
+                                                    onChange={(e) => setField(f.name, e.target.value)}
+                                                >
+                                                    <option value="false">false</option>
+                                                    <option value="true">true</option>
+                                                </select>
+                                            ) : f.type === "object" || f.type === "array" ? (
+                                                <textarea
+                                                    className="field-json"
+                                                    value={fieldValues[f.name] ?? ""}
+                                                    onChange={(e) => setField(f.name, e.target.value)}
+                                                    rows={3}
+                                                    spellCheck={false}
+                                                    placeholder={f.type === "array" ? "[ ... ]" : "{ ... }"}
+                                                />
+                                            ) : (
+                                                <input
+                                                    type={f.type === "number" || f.type === "integer" ? "number" : "text"}
+                                                    value={fieldValues[f.name] ?? ""}
+                                                    onChange={(e) => setField(f.name, e.target.value)}
+                                                    placeholder={f.required ? "" : "opcional"}
+                                                />
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
 
-                                {callError && <div className="banner error">{callError}</div>}
-                                {result && (
-                                    <>
-                                        <label>Resultado</label>
-                                        <pre className="result">{JSON.stringify(result, null, 2)}</pre>
-                                    </>
-                                )}
-                            </>
-                        )}
-                    </section>
+                            {selected.item.inputSchema && (
+                                <details className="schema">
+                                    <summary>Ver inputSchema</summary>
+                                    <pre>{JSON.stringify(selected.item.inputSchema, null, 2)}</pre>
+                                </details>
+                            )}
+
+                            <button className="run-btn" onClick={run} disabled={calling}>
+                                {calling
+                                    ? "Ejecutando…"
+                                    : selected.kind === "tool"
+                                        ? "Llamar a la tool"
+                                        : "Obtener prompt"}
+                            </button>
+
+                            {callError && <div className="banner error">{callError}</div>}
+                            {result && (
+                                <div className="result-block">
+                                    <label>Resultado</label>
+                                    <pre className="result">{JSON.stringify(result, null, 2)}</pre>
+                                </div>
+                            )}
+                        </section>
+                    )}
                 </main>
             )}
 
