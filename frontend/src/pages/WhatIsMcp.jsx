@@ -57,12 +57,6 @@ export default function WhatIsMcp() {
                 <strong>SSE</strong> (la variante HTTP anterior, ya en desuso). Este inspector
                 soporta los tres.
             </p>
-
-            <div className="callout callout-lime">
-                En este TFG, el servidor MCP expone datos IoT del campus de la Universidad de
-                Alicante — consumo eléctrico, agua y calidad ambiental — y este cliente sirve
-                para explorarlo y validarlo de forma visual.
-            </div>
         </div>
     );
 }

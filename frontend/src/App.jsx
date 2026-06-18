@@ -5,7 +5,7 @@ import "./App.css";
 import Home from "./pages/Home.jsx";
 import WhatIsMcp from "./pages/WhatIsMcp.jsx";
 import Inspector from "./pages/Inspector.jsx";
-import Creadora from "./pages/Creadora.jsx";
+import Desarrollo from "./pages/Desarrollo.jsx";
 
 const MoonIcon = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -49,12 +49,12 @@ function Layout({ theme, toggleTheme }) {
                     <nav className="navlinks">
                         <NavLink to="/inspector" className={navClass}>Inspector</NavLink>
                         <NavLink to="/mcp" className={navClass}>¿Qué es MCP?</NavLink>
-                        <NavLink to="/creadora" className={navClass}>¿Por qué?</NavLink>
+                        <NavLink to="/desarrollo" className={navClass}>¿Por qué?</NavLink>
                     </nav>
 
                     <a
                         className="icon-btn"
-                        href="https://github.com/TU-USUARIO/TU-REPO"
+                        href="https://github.com/vancovx/KunnaClienteMCP"
                         target="_blank"
                         rel="noreferrer"
                         aria-label="Repositorio en GitHub"
@@ -77,7 +77,7 @@ function Layout({ theme, toggleTheme }) {
                 <p className="foot-main">
                     Hecho por Vanessa Covrig Roibu para la Universidad de Alicante
                     <span className="heart">❤️</span>
-                    <a className="foot-gh" href="https://github.com/TU-USUARIO/TU-REPO" target="_blank" rel="noreferrer">
+                    <a className="foot-gh" href="https://github.com/vancovx/KunnaClienteMCP" target="_blank" rel="noreferrer">
                         <GithubIcon /> GitHub
                     </a>
                 </p>
@@ -113,7 +113,7 @@ export default function App() {
                     <Route index element={<Home />} />
                     <Route path="mcp" element={<WhatIsMcp />} />
                     <Route path="inspector" element={<Inspector />} />
-                    <Route path="creadora" element={<Creadora />} />
+                    <Route path="desarrollo" element={<Desarrollo />} />
                 </Route>
             </Routes>
         </BrowserRouter>
