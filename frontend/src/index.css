@@ -6,11 +6,14 @@
    Los COLORES y el tema (claro/oscuro) se gestionan por completo en App.css
    mediante :root[data-theme="…"]. */
 
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 :root {
   --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
   --sans: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: var(--sans);
   --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+  --pixel: 'Press Start 2P', ui-monospace, monospace;
 
   font: 18px/1.6 var(--serif);
   letter-spacing: 0;
