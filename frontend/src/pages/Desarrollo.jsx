@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const FOLDERS = [
     {
         title: "Sobre mí",
-        cls: "fld-pink",
+        tab: "dtab-pink",
         content: (
             <>
                 <p>
@@ -21,7 +21,7 @@ const FOLDERS = [
     },
     {
         title: "El proyecto",
-        cls: "fld-yellow",
+        tab: "dtab-yellow",
         content: (
             <>
                 <p>
@@ -38,7 +38,7 @@ const FOLDERS = [
     },
     {
         title: "¿Por qué un cliente propio?",
-        cls: "fld-lime",
+        tab: "dtab-lime",
         content: (
             <>
                 <p>
@@ -67,7 +67,7 @@ const FOLDERS = [
     },
     {
         title: "Contacto",
-        cls: "fld-orange",
+        tab: "dtab-ink",
         content: (
             <p>
                 <strong>GitHub:</strong>{" "}
@@ -86,7 +86,21 @@ const FOLDERS = [
 ];
 
 export default function Desarrollo() {
-    const [open, setOpen] = useState(0);
+    const [active, setActive] = useState(0);
+    const tabRefs = useRef([]);
+
+    function onKeyDown(e, i) {
+        let next = null;
+        if (e.key === "ArrowRight") next = (i + 1) % FOLDERS.length;
+        if (e.key === "ArrowLeft") next = (i - 1 + FOLDERS.length) % FOLDERS.length;
+        if (e.key === "Home") next = 0;
+        if (e.key === "End") next = FOLDERS.length - 1;
+        if (next !== null) {
+            e.preventDefault();
+            setActive(next);
+            tabRefs.current[next]?.focus();
+        }
+    }
 
     return (
         <section className="dev-stage">
@@ -95,21 +109,41 @@ export default function Desarrollo() {
                 <p className="dev-sub">Cómo y por qué nació este cliente MCP.</p>
             </header>
 
-            <div className="folders">
-                {FOLDERS.map((f, i) => (
-                    <article key={f.title} className={`fld ${f.cls} ${open === i ? "open" : ""}`}>
+            <div className="dfolder">
+                <div className="dtabs" role="tablist" aria-label="Sobre el proyecto">
+                    {FOLDERS.map((f, i) => (
                         <button
-                            className="ftab"
-                            onClick={() => setOpen(i)}
-                            aria-expanded={open === i}
+                            key={f.title}
+                            ref={(el) => (tabRefs.current[i] = el)}
+                            className={`dtab ${f.tab} ${active === i ? "is-active" : ""}`}
+                            role="tab"
+                            id={`dtab-${i}`}
+                            aria-controls={`dpanel-${i}`}
+                            aria-selected={active === i}
+                            tabIndex={active === i ? 0 : -1}
+                            onClick={() => setActive(i)}
+                            onKeyDown={(e) => onKeyDown(e, i)}
                         >
                             {f.title}
                         </button>
-                        <div className="fbody">
-                            <div className="fpad">{f.content}</div>
-                        </div>
-                    </article>
-                ))}
+                    ))}
+                </div>
+
+                <div className="dbody">
+                    {FOLDERS.map((f, i) => (
+                        <section
+                            key={f.title}
+                            className="dpanel"
+                            role="tabpanel"
+                            id={`dpanel-${i}`}
+                            aria-labelledby={`dtab-${i}`}
+                            hidden={active !== i}
+                        >
+                            <h2>{f.title}</h2>
+                            {f.content}
+                        </section>
+                    ))}
+                </div>
             </div>
         </section>
     );

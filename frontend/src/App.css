@@ -377,20 +377,20 @@ body {
 }
 .callout-lime { border-left: 8px solid var(--lime); }
 
- /* ═══ Desarrollo · Carpetas (centrado + superpuestas) ════════════════ */
-/* ═══ Desarrollo · Carpetas (centradas + redondeadas) ════════════════ */
+/* ═══ Desarrollo · Pestañas tipo carpeta (horizontales) ══════════════ */
+/* Sustituye al bloque antiguo de carpetas (.dev-stage … .fld-orange).   */
+/* Usa las variables de tema de la app, así funciona en claro y oscuro.  */
+
 .dev-stage {
     flex: 1;
     align-self: center;
     width: 100%;
-    max-width: 860px;            /* un poco más grandes */
-    min-height: 440px;
+    max-width: 820px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
 }
 
-.dev-hero { flex: 0 0 auto; padding: 0 2px 22px; text-align: center; }  /* cabecera centrada */
+.dev-hero { flex: 0 0 auto; padding: 0 2px 26px; text-align: center; }
 .dev-title {
     font-family: var(--heading);
     text-transform: uppercase;
@@ -401,97 +401,161 @@ body {
     margin: 0;
     color: var(--text);
 }
-.dev-sub { font-family: var(--serif); font-size: 16px; color: var(--muted); margin: 10px 0 0; }
-
-.folders {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;         /* crecen centradas, no a la izquierda */
-    min-height: 0;
-}
-
-.fld {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;     /* la pestaña queda a la izquierda de cada carpeta */
-}
-
-/* Carpetas cada vez más grandes (la pestaña NO cambia de tamaño) */
-.fld:nth-child(1) { width: 78%;  z-index: 1; }
-.fld:nth-child(2) { width: 86%;  z-index: 2; }
-.fld:nth-child(3) { width: 93%;  z-index: 3; }
-.fld:nth-child(4) { width: 100%; z-index: 4; }
-
-.fld:not(:first-child) { margin-top: -18px; }   /* solape: parecen apiladas */
-.fld.open { flex: 1; min-height: 0; }
-
-/* Pestaña redondeada, pegada a la izquierda, del tamaño del título */
-.ftab {
-    align-self: flex-start;
-    width: fit-content;
-    max-width: 100%;
-    position: relative;
-    text-align: left;
-    font-family: var(--heading);
-    font-weight: 700;
+.dev-sub {
+    font-family: var(--serif);
     font-size: 16px;
-    padding: 13px 26px;
-    border: none;
-    border-radius: 16px 16px 0 0;
-    background: var(--fc);
-    color: #111111;
-    cursor: pointer;
-    transition: transform 0.1s ease;
+    color: var(--muted);
+    margin: 10px 0 0;
 }
-.fld:not(.open) .ftab:hover { transform: translateY(-2px); }
 
-/* Hombro cóncavo que une la pestaña con el cuerpo (forma de carpeta, redondeado) */
-.ftab::after {
+/* ── Carpeta ──────────────────────────────────────────────────────── */
+.dfolder {
+    position: relative;
+    --r: 16px;                 /* radio del hombro cóncavo */
+}
+
+.dtabs {
+    display: flex;
+    gap: 6px;
+    padding: 0 26px;                        /* deja ver las esquinas del cuerpo */
+    margin-bottom: calc(-1 * var(--r));     /* las pestañas se montan sobre el cuerpo */
+    position: relative;
+    overflow-x: auto;                       /* en móvil: scroll en vez de romper */
+    scrollbar-width: none;
+}
+.dtabs::-webkit-scrollbar { display: none; }
+
+.dtab {
+    position: relative;
+    z-index: 1;                 /* inactivas: por DEBAJO del cuerpo */
+    flex: 0 0 auto;
+    border: none;
+    cursor: pointer;
+    padding: 12px 18px calc(12px + var(--r));   /* el extra se esconde tras el cuerpo */
+    border-radius: 12px 12px 0 0;
+    background: var(--dtab-bg);
+    color: var(--dtab-ink);
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+    white-space: nowrap;
+    transition: transform 0.16s ease, filter 0.16s ease;
+}
+
+/* Color propio de cada pestaña (fijo en ambos temas, como los chips de la app) */
+.dtab-pink   { --dtab-bg: var(--pink);   --dtab-ink: #111111; }
+.dtab-yellow { --dtab-bg: var(--yellow); --dtab-ink: #111111; }
+.dtab-lime   { --dtab-bg: var(--lime);   --dtab-ink: #111111; }
+.dtab-ink    { --dtab-bg: #210b2c;       --dtab-ink: #f3eef8; }
+
+.dtab:not(.is-active):hover { transform: translateY(-2px); filter: brightness(1.04); }
+
+/* Pestaña activa: del color del cuerpo y por ENCIMA de él */
+.dtab.is-active {
+    z-index: 3;
+    --dtab-bg: var(--surface);
+    --dtab-ink: var(--text);
+    cursor: default;
+}
+
+/* Hombros cóncavos que funden la pestaña activa con el cuerpo */
+.dtab.is-active::before,
+.dtab.is-active::after {
     content: "";
     position: absolute;
-    right: -16px;
-    bottom: 0;
-    width: 16px;
-    height: 16px;
-    background: var(--fc);
-    -webkit-mask: radial-gradient(circle at top right, transparent 16px, #000 16px);
-            mask: radial-gradient(circle at top right, transparent 16px, #000 16px);
+    bottom: var(--r);
+    width: var(--r);
+    height: var(--r);
+    background: var(--surface);
+}
+.dtab.is-active::before {
+    left: calc(-1 * var(--r));
+    -webkit-mask: radial-gradient(circle at top left, #0000 var(--r), #000 calc(var(--r) + 0.5px));
+            mask: radial-gradient(circle at top left, #0000 var(--r), #000 calc(var(--r) + 0.5px));
+}
+.dtab.is-active::after {
+    right: calc(-1 * var(--r));
+    -webkit-mask: radial-gradient(circle at top right, #0000 var(--r), #000 calc(var(--r) + 0.5px));
+            mask: radial-gradient(circle at top right, #0000 var(--r), #000 calc(var(--r) + 0.5px));
 }
 
-/* Cuerpo a todo el ancho */
-.fbody {
-    width: 100%;
-    background: var(--fc);
-    color: #111111;
-    border-radius: 0 16px 16px 16px;
-    overflow: hidden;
-    height: 24px;                /* base visible cuando está cerrada */
-}
-.fld.open .fbody {
-    height: auto;
-    flex: 1;
-    min-height: 0;
-    overflow: auto;
-    border-radius: 0 16px 0 0;   /* al abrir, sin radio abajo: parece que sigue */
+.dtab:focus-visible {
+    outline: 3px solid var(--outline);
+    outline-offset: 2px;
+    border-radius: 12px;
+    z-index: 4;
 }
 
-.fld:not(.open) .fpad { display: none; }     /* cerrada: solo se ve la base */
-.fld.open .fpad { padding-bottom: 42px; }    /* aire bajo el texto por el solape */
+/* ── Cuerpo de la carpeta ─────────────────────────────────────────── */
+.dbody {
+    position: relative;
+    z-index: 2;                 /* por encima de las inactivas, por debajo de la activa */
+    background: var(--surface);
+    border-radius: 18px;
+    padding: 32px 30px 36px;
+    min-height: 320px;
+    box-shadow: 6px 6px 0 var(--outline);   /* la sombra dura, como la home */
+}
 
-.fpad { padding: 16px 24px 18px; }
-.fpad h3 { font-family: var(--heading); font-weight: 700; font-size: 18px; margin: 0 0 8px; color: #111111; }
-.fpad p { font-size: 15px; line-height: 1.55; margin: 0 0 10px; color: #1a1320; }
-.fpad ul { margin: 0; padding-left: 18px; }
-.fpad li { font-size: 14.5px; line-height: 1.5; margin: 0 0 8px; color: #1a1320; }
-.fpad a { color: #111111; font-weight: 700; }
-.fpad strong { color: #111111; }
+/* ── Paneles ──────────────────────────────────────────────────────── */
+.dpanel { animation: dfade 0.28s ease; }
+.dpanel[hidden] { display: none; }
 
-.fld-pink   { --fc: var(--pink); }
-.fld-yellow { --fc: var(--yellow); }
-.fld-lime   { --fc: var(--lime); }
-.fld-orange { --fc: #e8590c; }
+@keyframes dfade {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dpanel h2 {
+    font-family: var(--heading);
+    font-weight: 800;
+    font-size: clamp(26px, 5vw, 36px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+    color: var(--text);
+}
+.dpanel p {
+    font-family: var(--serif);
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--muted);
+    margin: 0 0 14px;
+    max-width: 56ch;
+}
+.dpanel p:last-child { margin-bottom: 0; }
+.dpanel ul { margin: 0 0 14px; padding-left: 20px; }
+.dpanel li {
+    font-family: var(--serif);
+    font-size: 15.5px;
+    line-height: 1.55;
+    color: var(--muted);
+    margin: 0 0 10px;
+}
+.dpanel strong { color: var(--text); font-weight: 700; }
+.dpanel em { color: var(--text); }
+.dpanel a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.dpanel a:hover { text-decoration: underline; }
+
+/* ── Responsivo ───────────────────────────────────────────────────── */
+@media (max-width: 560px) {
+    .dtabs { padding: 0 14px; gap: 4px; }
+    .dtab {
+        font-size: 10.5px;
+        letter-spacing: 0.04em;
+        padding: 11px 12px calc(11px + var(--r));
+    }
+    .dbody { padding: 24px 20px 30px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dpanel { animation: none; }
+    .dtab { transition: none; }
+}
+
 /* ═══ Inspector ══════════════════════════════════════════════════════ */
 .inspector-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .inspector-head h1 { font-family: var(--heading); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
