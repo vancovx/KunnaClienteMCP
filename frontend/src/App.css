@@ -51,7 +51,7 @@ body {
     width: 100%;
     background: var(--bg);
     color: var(--text);
-    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-family: 'Lora', serif;
     transition: background-color 0.18s ease, color 0.18s ease;
 }
 
@@ -216,7 +216,8 @@ body {
 
 /* ═══ Páginas de contenido (prose) ═══════════════════════════════════ */
 .prose { max-width: 700px; }
-.prose h1 { font-size: clamp(30px, 5vw, 44px); font-weight: 800; letter-spacing: -0.02em; margin: 0 0 20px; }
+.prose h1 {  font-family: 'Poppins', sans-serif;
+  font-weight: 600; font-size:  }
 .prose h2 { font-size: 21px; font-weight: 700; margin: 36px 0 12px; }
 .prose p { font-size: 16px; line-height: 1.7; margin: 0 0 16px; }
 .prose .lead { font-size: 19px; color: var(--muted); }
@@ -357,6 +358,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 .banner.error { background: var(--err-bg); color: var(--err-text); border: 1px solid var(--err-border); }
 
 .grid { display: grid; grid-template-columns: 280px 1fr; gap: 20px; margin-top: 24px; align-items: start; }
+
 .panel { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: var(--surface); }
 .panel h2 {
     font-size: 11px;
@@ -464,8 +466,6 @@ textarea {
     margin-left: auto;
     margin-right: auto;
 }
-.home { max-width: 760px; }
-.inspector { max-width: 980px; }
 
 /* Centra el texto en las páginas de contenido (no en el inspector). */
 .home,
