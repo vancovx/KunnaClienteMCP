@@ -91,7 +91,7 @@ export default function Desarrollo() {
     return (
         <section className="dev-stage">
             <header className="dev-hero">
-                <h1 className="dev-title">El porqué</h1>
+                <h1 className="dev-title">¿Por qué?</h1>
                 <p className="dev-sub">Cómo y por qué nació este cliente MCP.</p>
             </header>
 

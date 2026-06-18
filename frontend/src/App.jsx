@@ -84,8 +84,7 @@ function Layout({ theme, toggleTheme }) {
                 <p className="foot-note">
                     Model Context Protocol es una especificación abierta de Anthropic. Los nombres de
                     productos, logotipos y marcas mencionados pertenecen a sus respectivos propietarios.
-                    Este proyecto es un Trabajo de Fin de Grado de carácter académico y no está afiliado
-                    ni respaldado por dichas empresas.
+                    Este proyecto es un Trabajo de Fin de Grado de carácter académico.
                 </p>
             </footer>
         </div>

@@ -378,18 +378,19 @@ body {
 .callout-lime { border-left: 8px solid var(--lime); }
 
  /* ═══ Desarrollo · Carpetas (centrado + superpuestas) ════════════════ */
+/* ═══ Desarrollo · Carpetas (centradas + redondeadas) ════════════════ */
 .dev-stage {
     flex: 1;
-    align-self: center;        /* centrado horizontal dentro de .page */
+    align-self: center;
     width: 100%;
-    max-width: 760px;          /* mismo ancho de lectura que antes */
+    max-width: 860px;            /* un poco más grandes */
     min-height: 440px;
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.dev-hero { flex: 0 0 auto; padding: 0 2px 22px; }
+.dev-hero { flex: 0 0 auto; padding: 0 2px 22px; text-align: center; }  /* cabecera centrada */
 .dev-title {
     font-family: var(--heading);
     text-transform: uppercase;
@@ -402,41 +403,84 @@ body {
 }
 .dev-sub { font-family: var(--serif); font-size: 16px; color: var(--muted); margin: 10px 0 0; }
 
-.folders { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+.folders {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;         /* crecen centradas, no a la izquierda */
+    min-height: 0;
+}
 
-.fld { position: relative; display: flex; flex-direction: column; }
-.fld:not(:first-child) { margin-top: -16px; }   /* solape entre carpetas */
-.fld.open { flex: 1; min-height: 0; z-index: 5; }
-.fld.open + .fld { margin-top: 0; }              /* la siguiente no pisa el cuerpo abierto */
+.fld {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;     /* la pestaña queda a la izquierda de cada carpeta */
+}
 
+/* Carpetas cada vez más grandes (la pestaña NO cambia de tamaño) */
+.fld:nth-child(1) { width: 78%;  z-index: 1; }
+.fld:nth-child(2) { width: 86%;  z-index: 2; }
+.fld:nth-child(3) { width: 93%;  z-index: 3; }
+.fld:nth-child(4) { width: 100%; z-index: 4; }
+
+.fld:not(:first-child) { margin-top: -18px; }   /* solape: parecen apiladas */
+.fld.open { flex: 1; min-height: 0; }
+
+/* Pestaña redondeada, pegada a la izquierda, del tamaño del título */
 .ftab {
-    width: 100%;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: 100%;
+    position: relative;
     text-align: left;
     font-family: var(--heading);
     font-weight: 700;
     font-size: 16px;
-    padding: 13px 24px;
-    border-radius: 14px;
+    padding: 13px 26px;
+    border: none;
+    border-radius: 16px 16px 0 0;
     background: var(--fc);
     color: #111111;
     cursor: pointer;
     transition: transform 0.1s ease;
 }
 .fld:not(.open) .ftab:hover { transform: translateY(-2px); }
-.fld.open .ftab { border-radius: 14px 14px 0 0; border-bottom-width: 0; }
 
-.fbody {
+/* Hombro cóncavo que une la pestaña con el cuerpo (forma de carpeta, redondeado) */
+.ftab::after {
+    content: "";
+    position: absolute;
+    right: -16px;
+    bottom: 0;
+    width: 16px;
+    height: 16px;
     background: var(--fc);
-    border-top: none;
-    border-radius: 0 0 16px 16px;
-    color: #111111;
-    height: 0;
-    border-width: 0;
-    overflow: hidden;
+    -webkit-mask: radial-gradient(circle at top right, transparent 16px, #000 16px);
+            mask: radial-gradient(circle at top right, transparent 16px, #000 16px);
 }
-.fld.open .fbody { border-width: 2px; border-top-width: 0; height: auto; flex: 1; min-height: 0; overflow: auto; }
 
-.fpad { padding: 16px 22px 18px; }
+/* Cuerpo a todo el ancho */
+.fbody {
+    width: 100%;
+    background: var(--fc);
+    color: #111111;
+    border-radius: 0 16px 16px 16px;
+    overflow: hidden;
+    height: 24px;                /* base visible cuando está cerrada */
+}
+.fld.open .fbody {
+    height: auto;
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    border-radius: 0 16px 0 0;   /* al abrir, sin radio abajo: parece que sigue */
+}
+
+.fld:not(.open) .fpad { display: none; }     /* cerrada: solo se ve la base */
+.fld.open .fpad { padding-bottom: 42px; }    /* aire bajo el texto por el solape */
+
+.fpad { padding: 16px 24px 18px; }
 .fpad h3 { font-family: var(--heading); font-weight: 700; font-size: 18px; margin: 0 0 8px; color: #111111; }
 .fpad p { font-size: 15px; line-height: 1.55; margin: 0 0 10px; color: #1a1320; }
 .fpad ul { margin: 0; padding-left: 18px; }
@@ -448,7 +492,6 @@ body {
 .fld-yellow { --fc: var(--yellow); }
 .fld-lime   { --fc: var(--lime); }
 .fld-orange { --fc: #e8590c; }
-
 /* ═══ Inspector ══════════════════════════════════════════════════════ */
 .inspector-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
 .inspector-head h1 { font-family: var(--heading); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
