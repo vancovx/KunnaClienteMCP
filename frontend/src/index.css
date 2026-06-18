@@ -1,15 +1,19 @@
-/* index.css — solo tipografía y reset.
+/* index.css — tipografía base y reset.
+   Sistema tipográfico ÚNICO para toda la app:
+     --serif  → cuerpo de texto (Source Serif 4: como Lora pero más legible en pantalla)
+     --sans   → títulos y UI (Poppins)
+     --mono   → código y campos técnicos
    Los COLORES y el tema (claro/oscuro) se gestionan por completo en App.css
-   mediante :root[data-theme="…"]. Aquí ya no definimos paleta propia ni
-   @media (prefers-color-scheme) para no pisar el tema elegido en la app. */
+   mediante :root[data-theme="…"]. */
 
 :root {
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans: 'Poppins', system-ui, 'Segoe UI', Roboto, sans-serif;
+  --heading: var(--sans);
+  --mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
+  font: 18px/1.6 var(--serif);
+  letter-spacing: 0;
   color-scheme: light dark;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -32,28 +36,18 @@ body {
   flex-direction: column;
 }
 
+/* Títulos: siempre la familia sans (Poppins). Tamaños y pesos concretos
+   se afinan en App.css por contexto (.hero, .prose h1, .inspector-head…). */
 h1,
-h2 {
+h2,
+h3 {
   font-family: var(--heading);
-  font-weight: 500;
   color: var(--text);
 }
 
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-}
-@media (max-width: 1024px) {
-  h1 { font-size: 36px; margin: 20px 0; }
-  h2 { font-size: 20px; }
-}
+h1 { font-weight: 600; }
+h2 { font-weight: 600; }
+h3 { font-weight: 600; }
 
 p {
   margin: 0;
@@ -61,8 +55,8 @@ p {
 
 code {
   font-family: var(--mono);
-  font-size: 15px;
-  line-height: 135%;
+  font-size: 0.9em;
+  line-height: 1.5;
   border-radius: 4px;
   /* color y fondo los heredan/definen las reglas específicas de App.css */
 }
