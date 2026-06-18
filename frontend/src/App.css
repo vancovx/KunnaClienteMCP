@@ -1,45 +1,45 @@
 :root[data-theme="light"] {
-    --bg: #fbf8ec;
+    --bg: #faf8fc;
     --surface: #ffffff;
-    --border: #e6e0cf;
-    --text: #1c1a1b;
-    --muted: #6b665d;
-    --pink: #fc90c2;
-    --lime: #b2fd94;
-    --yellow: #f6ed9e;
-    --btn-bg: #1c1a1b;
-    --btn-text: #fbf8ec;
-    --btn-hover: #000000;
+    --border: #e7dff0;
+    --text: #111111;
+    --muted: #6b6275;
+    --pink: #bc96e6;
+    --lime: #d7c2f0;
+    --yellow: #ffd166;
+    --btn-bg: #210b2c;
+    --btn-text: #faf8fc;
+    --btn-hover: #111111;
     --danger: #c2410c;
     --input-bg: #ffffff;
-    --code-bg: #1c1a1b;
+    --code-bg: #210b2c;
     --code-text: #f0ede6;
     --err-bg: #fff4ed;
     --err-text: #9a3412;
     --err-border: #fed7aa;
-    --outline: #1c1a1b;
+    --outline: #210b2c;
 }
 
 :root[data-theme="dark"] {
-    --bg: #1c1a1b;
-    --surface: #262223;
-    --border: #3a3537;
-    --text: #f0ede6;
-    --muted: #a39d95;
-    --pink: #fc90c2;
-    --lime: #b2fd94;
-    --yellow: #f6ed9e;
-    --btn-bg: #f0ede6;
-    --btn-text: #1c1a1b;
+    --bg: #210b2c;
+    --surface: #2e1440;
+    --border: #45295a;
+    --text: #f3eef8;
+    --muted: #b6a6c4;
+    --pink: #bc96e6;
+    --lime: #d7c2f0;
+    --yellow: #ffd166;
+    --btn-bg: #f3eef8;
+    --btn-text: #210b2c;
     --btn-hover: #ffffff;
     --danger: #fca5a5;
-    --input-bg: #211d1e;
-    --code-bg: #131112;
+    --input-bg: #2a1138;
+    --code-bg: #111111;
     --code-text: #e8e4dc;
-    --err-bg: #2a1714;
+    --err-bg: #3a1420;
     --err-text: #fca5a5;
-    --err-border: #4c2620;
-    --outline: #f0ede6;
+    --err-border: #5a2030;
+    --outline: #f3eef8;
 }
 
 /* ═══ Base ═══════════════════════════════════════════════════════════ */
@@ -81,7 +81,7 @@ body {
     text-decoration: none;
     color: var(--text);
     background: var(--lime);
-    color: #1c1a1b;
+    color: #111111;
     padding: 4px 10px;
     border-radius: 8px;
 }
@@ -104,7 +104,7 @@ body {
     transition: color 0.15s ease, background-color 0.15s ease;
 }
 .navlink:hover { color: var(--text); }
-.navlink.active { background: var(--pink); color: #1c1a1b; }
+.navlink.active { background: var(--pink); color: #111111; }
 
 .icon-btn {
     display: inline-flex;
@@ -119,21 +119,48 @@ body {
     cursor: pointer;
     transition: background-color 0.15s ease;
 }
-.icon-btn:hover { background: var(--yellow); color: #1c1a1b; }
+.icon-btn:hover { background: var(--yellow); color: #111111; }
 
 /* ═══ Página y footer ════════════════════════════════════════════════ */
 .page { flex: 1; padding: 40px 0; }
 
 .foot {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
-    padding: 20px 0;
-    font-size: 13px;
+    gap: 8px;
+    padding: 28px 16px 32px;
+    margin-top: 24px;
+    text-align: center;
+}
+.foot-main {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+.foot-gh {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: 6px;
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 600;
+}
+.foot-gh:hover { color: var(--text); }
+.foot-note {
+    max-width: 620px;
+    margin: 0;
+    font-size: 12.5px;
+    line-height: 1.6;
     color: var(--muted);
 }
-.dots { display: inline-flex; gap: 5px; }
-.dots i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
 
 /* ═══ Inicio ═════════════════════════════════════════════════════════ */
 .eyebrow {
@@ -152,7 +179,7 @@ body {
     margin: 0 0 24px;
     max-width: 14ch;
 }
-.hl { padding: 0 0.12em; border-radius: 8px; color: #1c1a1b; }
+.hl { padding: 0 0.12em; border-radius: 8px; color: #111111; }
 .hl-pink { background: var(--pink); }
 .hl-lime { background: var(--lime); }
 .lead { font-size: 19px; line-height: 1.6; color: var(--muted); max-width: 60ch; margin: 0 0 28px; }
@@ -160,7 +187,7 @@ body {
 .cta {
     display: inline-block;
     background: var(--pink);
-    color: #1c1a1b;
+    color: #111111;
     text-decoration: none;
     font-weight: 700;
     font-size: 16px;
@@ -242,7 +269,7 @@ body {
     display: inline-block;
     font-size: 13px;
     font-weight: 700;
-    color: #1c1a1b;
+    color: #111111;
     padding: 2px 9px;
     border-radius: 6px;
     margin-right: 8px;
@@ -276,7 +303,7 @@ body {
     justify-content: center;
     font-weight: 800;
     font-size: 22px;
-    color: #1c1a1b;
+    color: #111111;
 }
 .profile-name { margin: 0; font-size: 22px; }
 .role { margin: 4px 0 0; color: var(--muted); font-size: 15px; }
@@ -347,7 +374,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 .tool-title code { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
 .count {
     background: var(--yellow);
-    color: #1c1a1b;
+    color: #111111;
     border-radius: 999px;
     padding: 1px 8px;
     font-size: 11px;
@@ -359,7 +386,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 .item code { font-family: ui-monospace, "SF Mono", Menlo, monospace; }
 .item:hover { background: var(--bg); }
 .item.active { background: var(--pink); }
-.item.active code { color: #1c1a1b; }
+.item.active code { color: #111111; }
 .item.static { cursor: default; color: var(--muted); }
 .item.static:hover { background: transparent; }
 
@@ -425,3 +452,36 @@ textarea {
     *, body { transition: none !important; }
     .cta:hover, .cta:active { transform: none; }
 }
+
+/* ═══ Centrado de contenidos ═════════════════════════════════════════ */
+
+/* Centra el bloque de cada página en el ancho disponible.
+   .prose ya tenía max-width: 700px; a .home y .inspector se lo damos
+   para que el centrado quede equilibrado y no se estiren de lado a lado. */
+.home,
+.prose,
+.inspector {
+    margin-left: auto;
+    margin-right: auto;
+}
+.home { max-width: 760px; }
+.inspector { max-width: 980px; }
+
+/* Centra el texto en las páginas de contenido (no en el inspector). */
+.home,
+.prose {
+    text-align: center;
+}
+
+/* Centra los bloques con ancho propio dentro de la home. */
+.home .hero,
+.home .lead {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Estos usan flex, así que se centran con justify-content, no con text-align. */
+.diagram { justify-content: center; }
+.profile { justify-content: center; }
+.inspector-head { justify-content: center; }
+.connect-bar { justify-content: center; }

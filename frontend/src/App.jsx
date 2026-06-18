@@ -74,12 +74,19 @@ function Layout({ theme, toggleTheme }) {
             </main>
 
             <footer className="foot">
-                <span className="dots">
-                    <i style={{ background: "#fc90c2" }} />
-                    <i style={{ background: "#b2fd94" }} />
-                    <i style={{ background: "#f6ed9e" }} />
-                </span>
-                <span>Cliente Kunna MCP · Trabajo de fin de grado · Universidad de Alicante · 2026</span>
+                <p className="foot-main">
+                    Hecho por Vanessa Covrig Roibu para la Universidad de Alicante
+                    <span className="heart">❤️</span>
+                    <a className="foot-gh" href="https://github.com/TU-USUARIO/TU-REPO" target="_blank" rel="noreferrer">
+                        <GithubIcon /> GitHub
+                    </a>
+                </p>
+                <p className="foot-note">
+                    Model Context Protocol es una especificación abierta de Anthropic. Los nombres de
+                    productos, logotipos y marcas mencionados pertenecen a sus respectivos propietarios.
+                    Este proyecto es un Trabajo de Fin de Grado de carácter académico y no está afiliado
+                    ni respaldado por dichas empresas.
+                </p>
             </footer>
         </div>
     );
