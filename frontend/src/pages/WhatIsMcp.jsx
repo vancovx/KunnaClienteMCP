@@ -1,3 +1,6 @@
+import flowLight from "../assets/mcp-flow-light.png";
+import flowDark from "../assets/mcp-flow-dark.png";
+
 export default function WhatIsMcp() {
     return (
         <div className="prose">
@@ -9,17 +12,10 @@ export default function WhatIsMcp() {
                 datos externas de forma uniforme, sin integraciones a medida para cada una.
             </p>
 
-            <div className="diagram">
-                <div className="node">
-                    Cliente
-                    <span>esta app, Claude, un IDE…</span>
-                </div>
-                <div className="arrow">— MCP —&gt;</div>
-                <div className="node">
-                    Servidor
-                    <span>tus tools y datos</span>
-                </div>
-            </div>
+            <figure className="mcp-flow">
+                <img className="mcp-flow-light" src={flowLight} alt="Flujo de comunicación del Model Context Protocol" />
+                <img className="mcp-flow-dark" src={flowDark} alt="Flujo de comunicación del Model Context Protocol" />
+            </figure>
 
             <h2>El problema que resuelve</h2>
             <p>

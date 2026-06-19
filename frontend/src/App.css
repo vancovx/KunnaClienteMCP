@@ -302,6 +302,7 @@ body {
     font-weight: 600;
     font-size: clamp(30px, 5vw, 44px);
     letter-spacing: -0.02em;
+    margin: 0 0 14px;   /* sube el título a la altura del de ¿Por qué? */
 }
 .prose h2 { font-family: var(--heading); font-size: 21px; font-weight: 600; margin: 36px 0 12px; }
 .prose p { font-size: 16px; line-height: 1.7; margin: 0 0 16px; }
@@ -316,13 +317,13 @@ body {
     border-radius: 6px;
 }
 
-.diagram {
-    display: flex;
-    align-items: stretch;
-    gap: 14px;
-    flex-wrap: wrap;
-    margin: 28px 0;
-}
+
+/* ── Imágenes del flujo MCP (una por tema) ── */
+.mcp-flow { margin: 28px auto; max-width: 760px; }
+.mcp-flow img { display: block; width: 100%; height: auto; border-radius: 12px; }
+:root[data-theme="light"] .mcp-flow-dark  { display: none; }
+:root[data-theme="dark"]  .mcp-flow-light { display: none; }
+
 .node {
     flex: 1;
     min-width: 160px;
@@ -378,9 +379,6 @@ body {
 .callout-lime { border-left: 8px solid var(--lime); }
 
 /* ═══ Desarrollo · Pestañas tipo carpeta (horizontales) ══════════════ */
-/* Sustituye al bloque antiguo de carpetas (.dev-stage … .fld-orange).   */
-/* Usa las variables de tema de la app, así funciona en claro y oscuro.  */
-
 .dev-stage {
     flex: 1;
     align-self: center;
@@ -393,11 +391,10 @@ body {
 .dev-hero { flex: 0 0 auto; padding: 0 2px 26px; text-align: center; }
 .dev-title {
     font-family: var(--heading);
-    text-transform: uppercase;
-    font-weight: 800;
+    font-weight: 600;
     letter-spacing: -0.02em;
-    line-height: 0.95;
-    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.1;
+    font-size: clamp(30px, 5vw, 44px);
     margin: 0;
     color: var(--text);
 }
@@ -431,27 +428,30 @@ body {
     flex: 0 0 auto;
     border: none;
     cursor: pointer;
-    padding: 12px 18px calc(12px + var(--r));   /* el extra se esconde tras el cuerpo */
+    padding: 16px 26px calc(16px + var(--r));   /* el extra se esconde tras el cuerpo */
     border-radius: 12px 12px 0 0;
     background: var(--dtab-bg);
     color: var(--dtab-ink);
     font-family: var(--sans);
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     line-height: 1;
     white-space: nowrap;
-    transition: transform 0.16s ease, filter 0.16s ease;
+    transition: transform 0.16s ease, outline-color 0.16s ease;
 }
 
 /* Color propio de cada pestaña (fijo en ambos temas, como los chips de la app) */
 .dtab-pink   { --dtab-bg: var(--pink);   --dtab-ink: #111111; }
 .dtab-yellow { --dtab-bg: var(--yellow); --dtab-ink: #111111; }
 .dtab-lime   { --dtab-bg: var(--lime);   --dtab-ink: #111111; }
-.dtab-ink    { --dtab-bg: #210b2c;       --dtab-ink: #f3eef8; }
+.dtab-ink    { --dtab-bg: var(--pink);    --dtab-ink: #111111; }
 
-.dtab:not(.is-active):hover { transform: translateY(-2px); filter: brightness(1.04); }
+.dtab:not(.is-active):hover {
+    transform: translateY(-3px);
+    filter: brightness(0.95);
+}
 
 /* Pestaña activa: del color del cuerpo y por ENCIMA de él */
 .dtab.is-active {
@@ -482,12 +482,6 @@ body {
             mask: radial-gradient(circle at top right, #0000 var(--r), #000 calc(var(--r) + 0.5px));
 }
 
-.dtab:focus-visible {
-    outline: 3px solid var(--outline);
-    outline-offset: 2px;
-    border-radius: 12px;
-    z-index: 4;
-}
 
 /* ── Cuerpo de la carpeta ─────────────────────────────────────────── */
 .dbody {
@@ -497,7 +491,6 @@ body {
     border-radius: 18px;
     padding: 32px 30px 36px;
     min-height: 320px;
-    box-shadow: 6px 6px 0 var(--outline);   /* la sombra dura, como la home */
 }
 
 /* ── Paneles ──────────────────────────────────────────────────────── */
