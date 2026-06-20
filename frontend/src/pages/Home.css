@@ -125,26 +125,7 @@
     height: 100%;
     object-fit: contain;
 }
-.piece__label {
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--sans);
-    font-weight: 800;
-    font-size: clamp(14px, 2.2vw, 19px);
-    color: #111111;
-    pointer-events: none;
-    padding: 0 6px;
-    text-align: center;
-}
-.piece__label--pixel {
-    font-family: var(--pixel);
-    font-size: clamp(13px, 2vw, 20px);
-    letter-spacing: 0.02em;
-    color: #111111;
-}
+
 
 
 .piece__label {
@@ -155,17 +136,27 @@
     justify-content: center;
     font-family: var(--sans);
     font-weight: 800;
-    font-size: clamp(14px, 2.2vw, 19px);
-    color: #111111;
+    font-size: clamp(18px, 3vw, 26px);  /* más grande */
+    color: #000000;                      /* negro */
     pointer-events: none;
-    padding: 0 6px;
     text-align: center;
+    line-height: 1;
+}
+/* Ajuste fino de centrado por pieza (el PNG tiene el saliente en un lado) */
+.piece--ai .piece__label {
+    transform: translateX(-8px);   /* mover a la derecha */
+}
+.piece--data .piece__label {
+    transform: translateX(8px);  /* mover a la izquierda */
+}
+.piece--mcp .piece__label {
+    transform: translateX(0);     /* la central suele estar simétrica */
 }
 .piece__label--pixel {
     font-family: var(--pixel);
-    font-size: clamp(13px, 2vw, 20px);
+    font-size: clamp(15px, 2.4vw, 22px);
     letter-spacing: 0.02em;
-    color: #faf8fc;
+    color: #000000;                      /* negro (antes era claro #faf8fc) */
 }
 
 

@@ -54,9 +54,9 @@ export default function Home() {
 
                 {/* Las tres piezas desencajadas y giradas */}
                 <div className="home__puzzle" role="img" aria-label="Tu IA se conecta con tus datos a través de MCP">
-                    <PuzzlePiece variant="ai"   src={pieceLeft}   label="Tu IA"     rotate={-7} className="home__puzzle-piece" />
+                    <PuzzlePiece variant="ai"   src={pieceLeft}   label="IA"     rotate={-7} className="home__puzzle-piece" />
                     <PuzzlePiece variant="mcp"  src={pieceCenter} label="MCP"       rotate={8}  className="home__puzzle-piece home__puzzle-piece--mid" />
-                    <PuzzlePiece variant="data" src={pieceRight}  label="Tus datos" rotate={-5} className="home__puzzle-piece" />
+                    <PuzzlePiece variant="data" src={pieceRight}  label="Datos" rotate={-5} className="home__puzzle-piece" />
                 </div>
             </div>
     
