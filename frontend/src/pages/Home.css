@@ -1,0 +1,230 @@
+/* ════════════════════════════════════════════════════════════════════
+   Home.css — estilos EXCLUSIVOS de la página de Inicio.
+   Todas las clases van con prefijo .home__ / .piece para no colisionar
+   con el resto de la app. Reutiliza las variables de tema definidas en
+   App.css (--pink, --lime, --yellow, --outline, --surface, --accent…),
+   por lo que se adapta solo a los modos claro y oscuro.
+   ════════════════════════════════════════════════════════════════════ */
+
+.home {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(28px, 5vw, 56px) clamp(18px, 4vw, 44px) clamp(40px, 6vw, 64px);
+    border: 3px solid var(--outline);
+    border-radius: 20px;
+    background-color: var(--surface);
+    background-image: radial-gradient(var(--border) 1.4px, transparent 1.4px);
+    background-size: 22px 22px;
+    box-shadow: 8px 8px 0 var(--outline);
+}
+
+.home__inner {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+/* ── Badge superior ──────────────────────────────────────────────── */
+.home__eyebrow {
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #111111;
+    background: var(--lime);
+    border: 2.5px solid var(--outline);
+    border-radius: 10px;
+    box-shadow: 3px 3px 0 var(--outline);
+    padding: 7px 16px;
+    transform: rotate(-1.5deg);
+}
+
+/* ── Titular ─────────────────────────────────────────────────────── */
+.home__title {
+    margin: 24px 0 0;
+    font-family: var(--heading);
+    text-transform: uppercase;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+    font-weight: 800;
+}
+.home__title-line {
+    display: block;
+    font-size: clamp(44px, 9.5vw, 96px);
+    color: var(--text);
+}
+.home__mark {
+    display: inline-block;
+    background: var(--pink);
+    color: #111111;
+    padding: 0 0.16em;
+    border: 3px solid var(--outline);
+    border-radius: 12px;
+    box-shadow: 5px 5px 0 var(--outline);
+    white-space: nowrap;
+}
+
+/* ── Párrafo descriptivo ─────────────────────────────────────────── */
+.home__lead {
+    font-family: var(--serif);
+    font-size: clamp(16px, 2.2vw, 18px);
+    line-height: 1.6;
+    color: var(--muted);
+    max-width: 54ch;
+    margin: 26px 0 0;
+}
+.home__lead strong { color: var(--text); font-weight: 600; }
+
+/* ── Acciones ────────────────────────────────────────────────────── */
+.home__actions {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 30px;
+}
+.home__cta {
+    display: inline-block;
+    background: var(--pink);
+    color: #111111;
+    text-decoration: none;
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 16px;
+    padding: 13px 24px;
+    border: 3px solid var(--outline);
+    border-radius: 12px;
+    box-shadow: 5px 5px 0 var(--outline);
+    transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.home__cta:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--outline); }
+.home__cta:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--outline); }
+
+.home__link {
+    font-family: var(--sans);
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none;
+    color: var(--text);
+    border-bottom: 2px solid var(--pink);
+    padding-bottom: 1px;
+    transition: border-color 0.15s ease;
+}
+.home__link:hover { border-bottom-color: var(--outline); }
+
+/* ════════════════════════════════════════════════════════════════════
+   Piezas de puzle (SVG)
+   ════════════════════════════════════════════════════════════════════ */
+.home__puzzle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(6px, 1.5vw, 16px);
+    margin-top: clamp(40px, 6vw, 60px);
+    flex-wrap: wrap;
+}
+
+/* Pieza individual */
+.piece {
+    position: relative;
+    width: clamp(120px, 18vw, 168px);
+    aspect-ratio: 112 / 100;
+    transform: rotate(var(--rot, 0deg));
+    transition: transform 0.25s ease;
+}
+.piece__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+.piece__shape {
+    stroke: var(--outline);
+    stroke-width: 4;
+    stroke-linejoin: round;
+    /* sombra dura neubrutalista */
+    filter: drop-shadow(4px 4px 0 var(--outline));
+}
+.piece__label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sans);
+    font-weight: 800;
+    font-size: clamp(14px, 2.2vw, 19px);
+    color: #111111;
+    pointer-events: none;
+    padding: 0 6px;
+    text-align: center;
+}
+.piece__label--pixel {
+    font-family: var(--pixel);
+    font-size: clamp(13px, 2vw, 20px);
+    letter-spacing: 0.02em;
+    color: #faf8fc;
+}
+
+/* Colores de cada variante (fijos en ambos temas, como los chips de la app) */
+.piece--ai   .piece__shape { fill: var(--lime); }
+.piece--mcp  .piece__shape { fill: var(--accent); }
+.piece--data .piece__shape { fill: var(--yellow); }
+
+/* Hover sutil: la pieza se endereza un poco y se eleva */
+.home__puzzle-piece:hover { transform: rotate(calc(var(--rot, 0deg) * 0.4)) translateY(-6px); }
+
+/* Flotación suave continua de la pieza central */
+.home__puzzle-piece--mid { animation: floatMid 4.2s ease-in-out infinite; }
+@keyframes floatMid {
+    0%, 100% { transform: rotate(var(--rot, 0deg)) translateY(0); }
+    50%      { transform: rotate(var(--rot, 0deg)) translateY(-9px); }
+}
+/* Al hacer hover en la central, pausa la flotación y prioriza el hover */
+.home__puzzle-piece--mid:hover {
+    animation-play-state: paused;
+    transform: rotate(calc(var(--rot, 0deg) * 0.4)) translateY(-6px);
+}
+
+/* ── Piezas decorativas de las esquinas ──────────────────────────── */
+.home__deco {
+    position: absolute;
+    z-index: 0;
+    width: clamp(70px, 10vw, 110px);
+    opacity: 0.9;
+}
+.home__deco--tl { top: -22px; left: -26px; animation: floatDecoA 6s ease-in-out infinite; }
+.home__deco--br { bottom: -24px; right: -22px; animation: floatDecoB 7s ease-in-out infinite; }
+
+@keyframes floatDecoA {
+    0%, 100% { transform: rotate(-18deg) translateY(0); }
+    50%      { transform: rotate(-13deg) translateY(8px); }
+}
+@keyframes floatDecoB {
+    0%, 100% { transform: rotate(14deg) translateY(0); }
+    50%      { transform: rotate(9deg) translateY(-8px); }
+}
+
+/* ════════════════════════════════════════════════════════════════════
+   Responsivo
+   ════════════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+    .home { box-shadow: 5px 5px 0 var(--outline); }
+    .home__deco { display: none; }
+    .home__puzzle { gap: 4px; }
+}
+
+/* Accesibilidad: sin movimiento si el usuario lo pide */
+@media (prefers-reduced-motion: reduce) {
+    .piece,
+    .home__puzzle-piece--mid,
+    .home__deco--tl,
+    .home__deco--br { animation: none !important; transition: none; }
+    .home__cta:hover, .home__cta:active { transform: none; }
+    .home__puzzle-piece:hover { transform: rotate(var(--rot, 0deg)); }
+}

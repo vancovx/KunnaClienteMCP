@@ -171,133 +171,6 @@ body {
     color: var(--muted);
 }
 
-/* ═══ Inicio ═════════════════════════════════════════════════════════ */
-/* ═══ Inicio · Hero tipográfico ══════════════════════════════════════ */
-.hero-stage {
-    position: relative;
-    overflow: hidden;
-    text-align: left;
-    padding: clamp(32px, 6vw, 72px) clamp(20px, 4vw, 48px);
-    border: 2px solid var(--outline);
-    border-radius: 18px;
-    background-color: var(--surface);
-    background-image: radial-gradient(var(--border) 1.4px, transparent 1.4px);
-    background-size: 22px 22px;
-    box-shadow: 8px 8px 0 var(--outline);
-}
-
-.hero-grid {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-    gap: 6px 40px;
-    align-items: start;
-}
-
-.display {
-    margin: 0;
-    font-family: var(--heading);
-    text-transform: uppercase;
-    letter-spacing: -0.03em;
-    line-height: 0.92;
-}
-.display-line {
-    display: block;
-    font-weight: 800;
-    font-size: clamp(40px, 9vw, 88px);
-    color: var(--text);
-}
-.display-pixel {
-    display: block;
-    font-family: var(--pixel);
-    color: var(--accent);
-    font-size: clamp(26px, 5.5vw, 56px);
-    line-height: 1.1;
-    margin-top: 0.3em;
-    letter-spacing: 0;
-}
-
-.hero-aside { padding-top: 10px; }
-.hero-lead {
-    font-family: var(--serif);
-    font-size: 17px;
-    line-height: 1.6;
-    color: var(--muted);
-    margin: 0 0 26px;
-}
-
-/* etiquetas rotadas */
-.hero-tag {
-    position: absolute;
-    z-index: 2;
-    font-family: var(--sans);
-    font-size: 12px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
-    padding: 5px 11px;
-    border: 2px solid var(--outline);
-    border-radius: 8px;
-    color: #111111;
-}
-.hero-tag-tr { top: 18px; right: 20px; background: var(--yellow); transform: rotate(4deg); }
-.hero-tag-bl { bottom: 18px; left: 18px; background: var(--pink);  transform: rotate(-4deg); }
-
-/* bloques de las esquinas */
-.deco {
-    position: absolute;
-    z-index: 0;
-    border: 2px solid var(--outline);
-    border-radius: 8px;
-    box-shadow: 4px 4px 0 var(--outline);
-}
-.deco-1 { width: 64px; height: 64px; top: -16px; left: -16px;  background: var(--pink);   transform: rotate(-12deg); }
-.deco-2 { width: 44px; height: 44px; bottom: -14px; right: 90px; background: var(--lime);  transform: rotate(10deg); }
-.deco-3 { width: 30px; height: 30px; bottom: 42px; right: -12px; background: var(--yellow); transform: rotate(-8deg); }
-
-@media (max-width: 760px) {
-    .hero-grid { grid-template-columns: 1fr; gap: 20px; }
-    .hero-stage { box-shadow: 5px 5px 0 var(--outline); }
-    .hero-tag { display: none; }
-    .deco-2, .deco-3 { display: none; }
-}
-.hl { padding: 0 0.12em; border-radius: 8px; color: #111111; }
-.hl-pink { background: var(--pink); }
-.hl-lime { background: var(--lime); }
-.lead { font-size: 19px; line-height: 1.6; color: var(--muted); max-width: 60ch; margin: 0 0 28px; }
-
-.cta {
-    display: inline-block;
-    background: var(--pink);
-    color: #111111;
-    text-decoration: none;
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 16px;
-    padding: 13px 24px;
-    border: 2px solid var(--outline);
-    border-radius: 12px;
-    box-shadow: 5px 5px 0 var(--outline);
-    transition: transform 0.12s ease, box-shadow 0.12s ease;
-}
-.cta:hover { transform: translate(-2px, -2px); box-shadow: 7px 7px 0 var(--outline); }
-.cta:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0 var(--outline); }
-
-.cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 56px; }
-.card {
-    background: var(--surface);
-    border: 2px solid var(--outline);
-    border-radius: 14px;
-    padding: 20px;
-    border-top-width: 8px;
-}
-.card-pink { border-top-color: var(--pink); }
-.card-lime { border-top-color: var(--lime); }
-.card-yellow { border-top-color: var(--yellow); }
-.card h3 { font-family: var(--heading); margin: 0 0 8px; font-size: 17px; font-weight: 600; }
-.card p { margin: 0; font-size: 14px; line-height: 1.55; color: var(--muted); }
-
 /* ═══ Páginas de contenido (prose) ═══════════════════════════════════ */
 .prose { max-width: 100%; }
 .prose h1 {
@@ -1102,22 +975,19 @@ textarea {
 
 /* ═══ Responsive ═════════════════════════════════════════════════════ */
 @media (max-width: 760px) {
-    .cards { grid-template-columns: 1fr; }
     .grid { grid-template-columns: 1fr; }
     .nav { gap: 10px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
     *, body { transition: none !important; }
-    .cta:hover, .cta:active { transform: none; }
 }
 
 /* ═══ Centrado de contenidos ═════════════════════════════════════════ */
 
 /* Centra el bloque de cada página en el ancho disponible.
-   .prose ya tenía max-width: 700px; a .home y .inspector se lo damos
+   .prose ya tenía max-width: 700px; a .inspector se lo damos
    para que el centrado quede equilibrado y no se estiren de lado a lado. */
-.home,
 .prose,
 .inspector {
     margin-left: auto;
@@ -1125,7 +995,6 @@ textarea {
 }
 
 /* Centra el texto en las páginas de contenido (no en el inspector). */
-.home,
 .prose {
     text-align: center;
 }
@@ -1143,13 +1012,6 @@ textarea {
 .prose .note,
 .prose .profile {
     max-width: 760px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Centra los bloques con ancho propio dentro de la home. */
-.home .hero,
-.home .lead {
     margin-left: auto;
     margin-right: auto;
 }
