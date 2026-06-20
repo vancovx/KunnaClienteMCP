@@ -7,8 +7,8 @@ const FOLDERS = [
         content: (
             <>
                 <p>
-                    Soy <strong>Vanessa Covrig Roibu</strong>, estudiante de{" "}
-                    [Grado] en la Universidad de Alicante. Este cliente MCP es el
+                    Soy <strong>Vanessa Covrig Roibu</strong>, estudiante de Ingeniería Multimedia en la Universidad de Alicante. 
+                    Este cliente MCP es una pequeña parte del
                     resultado de mi Trabajo de Fin de Grado.
                 </p>
                 <p>

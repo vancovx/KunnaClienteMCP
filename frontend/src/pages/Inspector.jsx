@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ConsoleLog from "../components/ConsoleLog";
 
 const API = "http://localhost:4000/api";
 
@@ -94,8 +95,16 @@ export default function Inspector() {
     const [result, setResult] = useState(null);
     const [callError, setCallError] = useState("");
 
+    // Log de actividad para la consola.
+    const [log, setLog] = useState([]);
+
     const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
     const connected = status === "connected";
+
+    function pushLog(kind, label, msg) {
+        const time = new Date().toLocaleTimeString("es-ES");
+        setLog((l) => [...l, { kind, label, msg, time }]);
+    }
 
     const fields = selected
         ? selected.kind === "tool"
@@ -109,6 +118,7 @@ export default function Inspector() {
         setServer(null);
         setSelected(null);
         setResult(null);
+        pushLog("req", "→ POST", `/connect ${form.url}`);
         try {
             const auth =
                 form.authType === "bearer"
@@ -123,18 +133,28 @@ export default function Inspector() {
             if (!res.ok) throw new Error(data.cause || data.error || "Error desconocido");
             setServer(data);
             setStatus("connected");
+            pushLog(
+                "ok",
+                "← 200",
+                `conectado · ${data.serverInfo?.name ?? "servidor"}` +
+                    (data.serverInfo?.version ? ` v${data.serverInfo.version}` : "") +
+                    ` · ${data.tools.length} tools, ${data.prompts.length} prompts`
+            );
         } catch (e) {
             setError(e.message);
             setStatus("error");
+            pushLog("err", "← error", e.message);
         }
     }
 
     async function disconnect() {
+        pushLog("req", "→ POST", "/disconnect");
         await fetch(`${API}/disconnect`, { method: "POST" });
         setServer(null);
         setSelected(null);
         setResult(null);
         setStatus("idle");
+        pushLog("ok", "← ok", "desconectado");
     }
 
     function select(kind, item) {
@@ -177,6 +197,11 @@ export default function Inspector() {
             }
 
             const endpoint = selected.kind === "tool" ? "/call" : "/prompt";
+            pushLog(
+                "req",
+                selected.kind === "tool" ? "→ CALL" : "→ PROMPT",
+                `${selected.item.name} ${JSON.stringify(args)}`
+            );
             const res = await fetch(`${API}${endpoint}`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -185,8 +210,10 @@ export default function Inspector() {
             const data = await res.json();
             if (!res.ok) throw new Error(data.cause || data.error || "Error en la llamada");
             setResult(data);
+            pushLog("ok", "← ok", "respuesta recibida");
         } catch (e) {
             setCallError(e.message);
+            pushLog("err", "← error", e.message);
         } finally {
             setCalling(false);
         }
@@ -397,9 +424,23 @@ export default function Inspector() {
                 </main>
             )}
 
-            {status === "idle" && (
-                <p className="hint center">Introduce la URL de un servidor MCP y pulsa Conectar.</p>
+            {!connected && (
+                <div className="empty-state">
+                    <div className="empty-icon" aria-hidden="true">🔌</div>
+                    <h2 className="empty-title">Conecta un servidor para empezar</h2>
+                    <p className="empty-sub">
+                        Introduce la URL de un servidor MCP arriba y pulsa <strong>Conectar</strong>.
+                        Verás aquí sus tools, prompts y recursos, y podrás probarlos uno a uno.
+                    </p>
+                    <ol className="empty-steps">
+                        <li><span className="step-num pink">1</span> Elige transporte y URL</li>
+                        <li><span className="step-num lime">2</span> Conecta</li>
+                        <li><span className="step-num ghost">3</span> Explora y ejecuta</li>
+                    </ol>
+                </div>
             )}
+
+            <ConsoleLog entries={log} onClear={() => setLog([])} />
         </div>
     );
 }

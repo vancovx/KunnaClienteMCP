@@ -3,6 +3,67 @@ import flowLight from "../assets/mcp-flow-light.png";
 import flowDark from "../assets/mcp-flow-dark.png";
 
 // ── Contenido de cada carpeta ──────────────────────────────────────────
+const COMPONENTES = [
+    {
+        id: "host",
+        label: "Host",
+        tab: "vtab-lime",
+        title: "Host",
+        content: (
+            <>
+                <p>
+                    La aplicación de IA con la que interactúa el usuario: un IDE, una
+                    aplicación de escritorio o, como en este caso, un{" "}
+                    <strong>cliente de inspección</strong>.
+                </p>
+                <p>
+                    Es quien orquesta todo: gestiona el modelo, decide cuándo usar las
+                    capacidades de los servidores y coordina una o varias conexiones a la vez.
+                </p>
+            </>
+        ),
+    },
+    {
+        id: "client",
+        label: "Cliente",
+        tab: "vtab-pink",
+        title: "Cliente",
+        content: (
+            <>
+                <p>
+                    El componente dentro del host que mantiene una conexión{" "}
+                    <strong>uno a uno</strong> con un servidor MCP.
+                </p>
+                <p>
+                    Habla el protocolo (JSON-RPC), negocia capacidades durante el{" "}
+                    <em>initialize</em> y traduce las peticiones del host en llamadas que el
+                    servidor entiende.
+                </p>
+            </>
+        ),
+    },
+    {
+        id: "server",
+        label: "Server",
+        tab: "vtab-yellow",
+        title: "Server",
+        content: (
+            <>
+                <p>
+                    El programa que <strong>expone capacidades</strong> —tools, prompts y
+                    resources— sobre un sistema o fuente de datos concreta.
+                </p>
+                <p>
+                    Cada servidor es independiente y se centra en un dominio: acceso a una
+                    base de datos, al sistema de archivos o, en este proyecto, a los sensores
+                    IoT del campus.
+                </p>
+            </>
+        ),
+    },
+];
+
+
 const PIEZAS = [
     {
         id: "tools",
@@ -68,7 +129,7 @@ const TRANSPORTES = [
         id: "stdio",
         label: "stdio",
         tab: "vtab-lime",
-        title: "stdio",
+        title: "STDIO",
         content: (
             <>
                 <p>
@@ -86,7 +147,7 @@ const TRANSPORTES = [
         id: "http",
         label: "HTTP",
         tab: "vtab-pink",
-        title: "HTTP",
+        title: "HTTP Streamable",
         content: (
             <>
                 <p>
@@ -208,11 +269,15 @@ export default function WhatIsMcp() {
                 MCP puede usar cualquier servidor que lo implemente.
             </p>
 
-            <h2>Las piezas</h2>
+            <h2>Participantes en la arquitectura MCP</h2>
+            <p>La arquitectura MCP se organiza en tres componentes:</p>
+            <VFolder items={COMPONENTES} idBase="componentes" label="Componentes del sistema MCP" />
+
+            <h2>Capacidades de un servidor MCP</h2>
             <p>Un servidor MCP puede exponer tres tipos de capacidades:</p>
             <VFolder items={PIEZAS} idBase="piezas" label="Capacidades de un servidor MCP" />
 
-            <h2>Transportes</h2>
+            <h2>¿Cómo se comunican los participantes de la arquitectura MCP?</h2>
             <p>
                 Cliente y servidor se comunican por un “transporte”. Este inspector soporta
                 los tres habituales:
