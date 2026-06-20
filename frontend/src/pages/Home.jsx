@@ -5,6 +5,7 @@ import pieceLeft from "../assets/puzzle-left.png";
 import pieceCenter from "../assets/puzzle-center.png";
 import pieceRight from "../assets/puzzle-right.png";
 
+
 /* Una pieza de puzle: imagen de fondo + texto centrado encima.
    El borde grueso y la sombra ya vienen dibujados en el propio PNG,
    incluso girada se ve limpio (cosa que con clip-path no se conseguía). */
