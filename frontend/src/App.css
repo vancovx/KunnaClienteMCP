@@ -129,7 +129,7 @@ body {
 .icon-btn:hover { background: var(--yellow); color: #111111; }
 
 /* ═══ Página y footer ════════════════════════════════════════════════ */
-.page { flex: 1; padding: 40px 0; display: flex; flex-direction: column; }
+.page { flex: 1; padding: 20px 0; display: flex; flex-direction: column; }
 
 .foot {
     display: flex;

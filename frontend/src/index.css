@@ -1,11 +1,3 @@
-/* index.css — tipografía base y reset.
-   Sistema tipográfico ÚNICO para toda la app:
-     --serif  → cuerpo de texto (Source Serif 4: como Lora pero más legible en pantalla)
-     --sans   → títulos y UI (Poppins)
-     --mono   → código y campos técnicos
-   Los COLORES y el tema (claro/oscuro) se gestionan por completo en App.css
-   mediante :root[data-theme="…"]. */
-
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :root {
