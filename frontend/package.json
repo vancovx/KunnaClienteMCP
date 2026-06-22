@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "build-docker": "docker build . -t kunnaclientemcp-frontend:latest",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
