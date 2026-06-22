@@ -86,7 +86,6 @@ body {
     font-size: 16px;
     letter-spacing: -0.02em;
     text-decoration: none;
-    background: var(--pink);
     color: #111111;
     padding: 4px 10px;
     border-radius: 8px;
@@ -111,7 +110,7 @@ body {
     transition: color 0.15s ease, background-color 0.15s ease;
 }
 .navlink:hover { color: var(--text); }
-.navlink.active { background: var(--pink); color: #111111; }
+.navlink.active { background: var(--lime); color: #111111; }
 
 .icon-btn {
     display: inline-flex;
@@ -126,7 +125,7 @@ body {
     cursor: pointer;
     transition: background-color 0.15s ease;
 }
-.icon-btn:hover { background: var(--pink); color: #111111; }
+.icon-btn:hover { background: var(--lime); color: #111111; }
 
 /* ═══ Página y footer ════════════════════════════════════════════════ */
 .page { flex: 1; padding: 20px 0; display: flex; flex-direction: column; }
