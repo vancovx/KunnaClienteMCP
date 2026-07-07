@@ -80,7 +80,7 @@ export default function Inspector() {
     const [form, setForm] = useState({
         transport: "http",
         url: "http://localhost:3001/mcp",
-        authType: "bearer",
+        authType: "none",
         token: "",
     });
     const [status, setStatus] = useState("idle");
@@ -114,6 +114,13 @@ export default function Inspector() {
         : [];
 
     async function connect() {
+            if (form.authType === "bearer" && !form.token.trim()) {
+                setStatus("error");
+                setError("Has elegido auth Bearer pero no has introducido ningún token.");
+                pushLog("err", "← error", "token vacío");
+                return; 
+            }
+
         setStatus("connecting");
         setError("");
         setServer(null);

@@ -173,7 +173,10 @@ body {
 }
 
 /* ═══ Páginas de contenido (prose) ═══════════════════════════════════ */
-.prose { max-width: 100%; }
+.prose {
+    max-width: 100%;
+    text-align: center;
+}
 .prose h1 {
     font-family: var(--heading);
     font-weight: 600;
@@ -194,6 +197,26 @@ body {
     border-radius: 6px;
 }
 
+/* .prose ocupa todo el ancho (como el inspector), pero las líneas de
+   texto se limitan a un ancho cómodo de lectura y se centran. Así el bloque
+   llega hasta el final del navbar sin que el texto se estire de lado a lado. */
+.prose p,
+.prose .lead,
+.prose ul,
+.prose ol,
+.prose .features,
+.prose .callout,
+.prose .diagram,
+.prose .note,
+.prose .profile {
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Estos usan flex, así que se centran con justify-content, no con text-align. */
+.diagram { justify-content: center; }
+.profile { justify-content: center; }
 
 /* ── Imágenes del flujo MCP (una por tema) ── */
 .mcp-flow { margin: 28px auto; max-width: 760px; }
@@ -541,7 +564,14 @@ body {
 }
 
 /* ═══ Inspector ══════════════════════════════════════════════════════ */
-.inspector-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
+.inspector-head {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 6px;
+    margin-bottom: 20px;
+}
 .inspector-head h1 {
     font-family: var(--heading);
     font-weight: 600;
@@ -553,13 +583,20 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 7px;
+    margin-top: 2px;
     font-size: 12px;
     color: var(--muted);
     font-family: var(--mono);
 }
 .server-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime); }
 
-.connect-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.connect-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+}
 .connect-bar input,
 .connect-bar select {
     padding: 11px 18px;
@@ -591,16 +628,7 @@ body {
 .connect-bar .url { flex: 1; min-width: 240px; font-family: var(--mono); }
 .connect-bar .token { width: 180px; }
 
-/* ═══ Desplegable propio (componente Dropdown) ═══════════════════════
-   Pega este bloque en App.css, por ejemplo justo después de las reglas
-   del .connect-bar. Sustituye a los <select> nativos del inspector.
-
-   IMPORTANTE: ya puedes borrar las reglas antiguas de los select:
-   - ".connect-bar select" (dentro de la regla compartida con input)
-   - ".field select" (dentro de la regla compartida)
-   - el bloque de "appearance: none" con --chevron y las reglas
-     "select option" si llegaste a añadirlas.
-*/
+/* ═══ Desplegable propio (componente Dropdown) ═══════════════════════ */
 
 .dd { position: relative; display: inline-flex; }
 
@@ -724,19 +752,19 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 }
 
 /* Cuando ocupa todo, las dos listas (tools y prompts) van en paralelo
-   para aprovechar el ancho, y los items pueden mostrarse en rejilla. */
+   para aprovechar el ancho, y los items se muestran en rejilla de tarjetas. */
 .grid.full .sidebar h2:not(:first-child) { margin-top: 24px; }
 .grid.full .list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
 }
 
 /* En modo estrecho (split) las listas vuelven a ser una columna vertical. */
 .grid.split .list {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 
 @media (max-width: 760px) {
@@ -744,26 +772,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     .grid.full .list { grid-template-columns: 1fr; }
 }
 
-/* Botón de cerrar el detalle (vuelve a la lista a todo el ancho) */
-.detail-head { position: relative; }
-.close-btn {
-    margin-left: auto;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    color: var(--muted);
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    border-radius: 8px;
-    font-size: 18px;
-    line-height: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-.close-btn:hover { background: var(--bg); color: var(--text); border-color: var(--border); }
-
+/* Panel contenedor (sidebar y detalle) */
 .panel { border: none; border-radius: 12px; padding: 18px; background: var(--surface); min-width: 0; }
 .panel h2 {
     font-size: 11px;
@@ -778,27 +787,65 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 }
 .panel h2:not(:first-child) { margin-top: 24px; }
 .count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
     font-family: var(--sans);
     background: var(--yellow);
     color: #111111;
-    border-radius: 999px;
-    padding: 1px 8px;
+    border-radius: 50%;
     font-size: 11px;
-    font-weight: 600;
+    font-weight: 700;
+    line-height: 1;
 }
 
-/* ── Lista lateral de tools / prompts ── */
-.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+/* ── Lista de tools / prompts: tarjetas con icono de color ── */
+.list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
 .item {
-    padding: 9px 11px;
-    border-radius: 9px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px;
+    border-radius: 12px;
     cursor: pointer;
-    border: 1px solid transparent;
-    transition: background-color 0.12s ease, border-color 0.12s ease;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    transition: border-color 0.12s ease, transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
 }
+.item:hover {
+    border-color: var(--pink);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+}
+.item.active { background: var(--lime); border-color: var(--lime); }
+.item.active code,
+.item.active .item-desc { color: #111111; }
+
+.item-head { display: flex; align-items: center; gap: 8px; }
+.item-icon {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    color: #111111;
+}
+.item-icon.tool { background: var(--pink); }
+.item-icon.prompt { background: var(--lime); }
+.item.active .item-icon { background: #111111; color: var(--lime); }
+
 .item code {
     font-family: var(--mono);
     font-size: 13px;
+    font-weight: 600;
     background: none;
     color: var(--text);
     padding: 0;
@@ -806,25 +853,47 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 .item-desc {
     display: block;
     font-family: var(--sans);
-    font-size: 11.5px;
-    line-height: 1.4;
+    font-size: 12.5px;
+    line-height: 1.5;
     color: var(--muted);
-    margin-top: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
-.item:hover { background: var(--bg); }
-.item.active { background: var(--pink); border-color: var(--pink); }
-.item.active code,
-.item.active .item-desc { color: #111111; }
 .empty {
     font-family: var(--sans); font-size: 13px; color: var(--muted); padding: 4px 2px; }
 
 /* ── Detalle de la tool / prompt seleccionada ── */
-.detail-head { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+.detail-head {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 4px;
+    padding-right: 36px;   /* deja hueco para el botón de cerrar */
+}
+.close-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border-radius: 8px;
+    font-size: 18px;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.close-btn:hover { background: var(--bg); color: var(--text); border-color: var(--border); }
+
 .kind-pill {
     font-family: var(--sans);
     font-size: 10px;
@@ -836,12 +905,22 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     color: #111111;
 }
 .kind-tool { background: var(--pink); }
-.kind-prompt { background: var(--lime); }
-.tool-title { font-family: var(--heading); text-transform: none; font-size: 16px; font-weight: 600; letter-spacing: 0; color: var(--text); margin: 0; }
-.tool-title code {
-    font-family: var(--mono);
-    background: none;
+.kind-prompt { background: var(--yellow); }
+.tool-title {
+    font-family: var(--heading);
+    text-transform: none;
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     color: var(--text);
+    margin: 0;
+}
+.tool-title code {
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    background: none;
+    color: inherit;
     padding: 0;
 }
 .desc { font-family: var(--sans); font-size: 14px; color: var(--muted); line-height: 1.55; margin: 6px 0 18px; }
@@ -1128,41 +1207,13 @@ textarea {
 }
 .inspector-lead strong { color: var(--text); }
 
-/* Centra el texto en las páginas de contenido (no en el inspector). */
-.prose {
-    text-align: center;
-}
-
-/* .prose ahora ocupa todo el ancho (como el inspector), pero las líneas de
-   texto se limitan a un ancho cómodo de lectura y se centran. Así el bloque
-   llega hasta el final del navbar sin que el texto se estire de lado a lado. */
-.prose p,
-.prose .lead,
-.prose ul,
-.prose ol,
-.prose .features,
-.prose .callout,
-.prose .diagram,
-.prose .note,
-.prose .profile {
-    max-width: 760px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-/* Estos usan flex, así que se centran con justify-content, no con text-align. */
-.diagram { justify-content: center; }
-.profile { justify-content: center; }
-.inspector-head { justify-content: center; }
-.connect-bar { justify-content: center; }
-
 .contacts { display: flex; justify-content: center; gap: 12px; margin-top: 8px; }
 .contacts .icon-btn {
     width: 46px; height: 46px;
     border-radius: 12px;
 }
 
-/* ═══ Vista legible del resultado (pegar al final de App.css) ═══════ */
+/* ═══ Vista legible del resultado ═════════════════════════════════════ */
 
 .result-head {
     display: flex;
@@ -1196,9 +1247,6 @@ textarea {
     font-weight: 600;
 }
 
-/* white-space: pre-wrap → los \n del texto se renderizan como saltos
-   de línea reales, y las líneas largas envuelven en vez de hacer scroll
-   horizontal (a diferencia del <pre> del JSON, que usa white-space: pre). */
 .result.pretty {
     font-family: var(--serif);
     font-size: 14.5px;
