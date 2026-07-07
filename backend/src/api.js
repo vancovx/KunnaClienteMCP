@@ -39,7 +39,7 @@ app.post("/api/call", async (req, res) => {
     }
 });
 
-// Obtener un prompt.                "arguments": {} }
+// Obtener prompts
 app.post("/api/prompt", async (req, res) => {
     try {
         const { name, arguments: args } = req.body;
