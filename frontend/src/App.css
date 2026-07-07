@@ -1026,3 +1026,68 @@ textarea {
     width: 46px; height: 46px;
     border-radius: 12px;
 }
+
+/* ═══ Vista legible del resultado (pegar al final de App.css) ═══════ */
+
+.result-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 6px;
+}
+
+.view-toggle {
+    display: flex;
+    gap: 4px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 3px;
+    background: var(--input-bg);
+}
+.view-toggle button {
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 4px 12px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+}
+.view-toggle button:hover { background: var(--bg); }
+.view-toggle button.active {
+    background: var(--pink);
+    color: #111;
+    font-weight: 600;
+}
+
+/* white-space: pre-wrap → los \n del texto se renderizan como saltos
+   de línea reales, y las líneas largas envuelven en vez de hacer scroll
+   horizontal (a diferencia del <pre> del JSON, que usa white-space: pre). */
+.result.pretty {
+    font-family: var(--serif);
+    font-size: 14.5px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+}
+
+.text-block + .text-block {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+}
+
+.role-pill {
+    display: inline-block;
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--lime);
+    color: #111;
+    margin-bottom: 6px;
+}

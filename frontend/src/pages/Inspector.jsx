@@ -75,6 +75,28 @@ function coerceValues(fields, values) {
     return out;
 }
 
+// Extrae los bloques de texto de una respuesta MCP para mostrarlos de forma
+// legible. Devuelve null si la respuesta no tiene la forma esperada, en cuyo
+// caso el componente cae al JSON crudo (importante para un cliente genérico:
+// bloques image, resource, etc. no se pierden nunca).
+function extractTextBlocks(result) {
+    // Respuesta de tool: { content: [{ type: "text", text }, ...] }
+    if (Array.isArray(result?.content)) {
+        const blocks = result.content
+            .filter((b) => b.type === "text" && typeof b.text === "string")
+            .map((b) => ({ label: null, text: b.text }));
+        return blocks.length ? blocks : null;
+    }
+    // Respuesta de prompt: { messages: [{ role, content: { type: "text", text } }, ...] }
+    if (Array.isArray(result?.messages)) {
+        const blocks = result.messages
+            .filter((m) => m.content?.type === "text")
+            .map((m) => ({ label: m.role, text: m.content.text }));
+        return blocks.length ? blocks : null;
+    }
+    return null;
+}
+
 export default function Inspector() {
     const [form, setForm] = useState({
         transport: "http",
@@ -93,6 +115,7 @@ export default function Inspector() {
 
     const [calling, setCalling] = useState(false);
     const [result, setResult] = useState(null);
+    const [resultView, setResultView] = useState("pretty"); // "pretty" | "json"
     const [callError, setCallError] = useState("");
 
     // Log de actividad para la consola.
@@ -167,6 +190,7 @@ export default function Inspector() {
         setArgsText("{}");
         setRawMode(false);
         setResult(null);
+        setResultView("pretty");
         setCallError("");
     }
 
@@ -184,6 +208,7 @@ export default function Inspector() {
         setCalling(true);
         setCallError("");
         setResult(null);
+        setResultView("pretty");
         try {
             let args;
             if (rawMode) {
@@ -218,6 +243,9 @@ export default function Inspector() {
             setCalling(false);
         }
     }
+
+    // Bloques de texto extraídos del resultado (null → solo vista JSON).
+    const textBlocks = result ? extractTextBlocks(result) : null;
 
     return (
         <div className="inspector">
@@ -413,10 +441,43 @@ export default function Inspector() {
                             </button>
 
                             {callError && <div className="banner error">{callError}</div>}
+
                             {result && (
                                 <div className="result-block">
-                                    <label>Resultado</label>
-                                    <pre className="result">{JSON.stringify(result, null, 2)}</pre>
+                                    <div className="result-head">
+                                        <label>Resultado</label>
+                                        {textBlocks && (
+                                            <div className="view-toggle">
+                                                <button
+                                                    type="button"
+                                                    className={resultView === "pretty" ? "active" : ""}
+                                                    onClick={() => setResultView("pretty")}
+                                                >
+                                                    Legible
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={resultView === "json" ? "active" : ""}
+                                                    onClick={() => setResultView("json")}
+                                                >
+                                                    JSON
+                                                </button>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {textBlocks && resultView === "pretty" ? (
+                                        <div className="result pretty">
+                                            {textBlocks.map((b, i) => (
+                                                <div key={i} className="text-block">
+                                                    {b.label && <span className="role-pill">{b.label}</span>}
+                                                    <div className="text-content">{b.text}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <pre className="result">{JSON.stringify(result, null, 2)}</pre>
+                                    )}
                                 </div>
                             )}
                         </section>
