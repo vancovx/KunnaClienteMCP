@@ -19,6 +19,7 @@
     --err-border: #fed7aa;
     --outline: #210b2c;
     --accent: #e8590c;
+    --chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23111111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
     
 }
 
@@ -46,6 +47,7 @@
     --err-border: #5a2030;
     --outline: #f3eef8;
     --accent: #fb923c;
+    --chevron: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'><path d='M1 1l5 5 5-5' fill='none' stroke='%23f5f5f5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
 }
 
 /* ═══ Base ═══════════════════════════════════════════════════════════ */
@@ -540,7 +542,13 @@ body {
 
 /* ═══ Inspector ══════════════════════════════════════════════════════ */
 .inspector-head { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; }
-.inspector-head h1 { font-family: var(--heading); font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin: 0; }
+.inspector-head h1 {
+    font-family: var(--heading);
+    font-weight: 600;
+    font-size: clamp(30px, 5vw, 44px);
+    letter-spacing: -0.02em;
+    margin: 0;
+}
 .server-badge {
     display: inline-flex;
     align-items: center;
@@ -554,21 +562,127 @@ body {
 .connect-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .connect-bar input,
 .connect-bar select {
-    padding: 9px 11px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    padding: 11px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
     font-family: var(--sans);
     font-size: 14px;
     background: var(--input-bg);
     color: var(--text);
 }
+.connect-bar select option,
+.field select option {
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--sans);
+}
+
+.connect-bar select,
+.field select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 42px;                       /* hueco para la flecha */
+    background-image: var(--chevron);
+    background-repeat: no-repeat;
+    background-position: right 16px center;    /* ← la distancia al borde; sube a 18-20px si la quieres aún más adentro */
+    background-size: 11px;
+    cursor: pointer;
+}
 .connect-bar .url { flex: 1; min-width: 240px; font-family: var(--mono); }
 .connect-bar .token { width: 180px; }
 
+/* ═══ Desplegable propio (componente Dropdown) ═══════════════════════
+   Pega este bloque en App.css, por ejemplo justo después de las reglas
+   del .connect-bar. Sustituye a los <select> nativos del inspector.
+
+   IMPORTANTE: ya puedes borrar las reglas antiguas de los select:
+   - ".connect-bar select" (dentro de la regla compartida con input)
+   - ".field select" (dentro de la regla compartida)
+   - el bloque de "appearance: none" con --chevron y las reglas
+     "select option" si llegaste a añadirlas.
+*/
+
+.dd { position: relative; display: inline-flex; }
+
+/* Botón cerrado: píldora con borde, como los inputs.
+   El :hover explícito anula el hover global de button. */
+.dd-toggle,
+.dd-toggle:hover {
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-width: 112px;
+    padding: 11px 16px 11px 18px;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    background: var(--input-bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+}
+.dd-toggle:disabled { opacity: 0.5; cursor: default; }
+
+.dd-value { white-space: nowrap; }
+.dd-placeholder { color: var(--muted); }
+
+/* Flecha: separada del borde y gira al abrir */
+.dd-chevron {
+    flex-shrink: 0;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+}
+.dd-toggle.is-open .dd-chevron { transform: rotate(180deg); }
+
+/* Menú desplegado: tarjeta redondeada con los colores del tema */
+.dd-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    z-index: 30;
+    min-width: 100%;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+    animation: dd-pop 0.12s ease;
+}
+@keyframes dd-pop {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Opciones: pildoritas, resaltado con los colores de la app
+   (mismo patrón que los .item de la lista de tools) */
+.dd-option {
+    padding: 9px 14px;
+    border-radius: 999px;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--text);
+    cursor: pointer;
+    white-space: nowrap;
+}
+.dd-option.is-highlight { background: var(--bg); }
+.dd-option.is-selected { background: var(--pink); color: #111111; font-weight: 600; }
+
+/* En el formulario de parámetros el dropdown ocupa todo el ancho */
+.field .dd { width: 100%; }
+.field .dd-toggle { width: 100%; }
+
+@media (prefers-reduced-motion: reduce) {
+    .dd-menu { animation: none; }
+    .dd-chevron { transition: none; }
+}
+
 button {
-    padding: 9px 16px;
+    padding: 11px 22px;
     border: none;
-    border-radius: 8px;
+    border-radius: 999px;
     background: var(--btn-bg);
     color: var(--btn-text);
     font-family: var(--sans);
@@ -636,6 +750,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     margin-left: auto;
     background: none;
     border: 1px solid var(--border);
+    border-radius: 50%;
     color: var(--muted);
     width: 28px;
     height: 28px;
@@ -649,7 +764,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 }
 .close-btn:hover { background: var(--bg); color: var(--text); border-color: var(--border); }
 
-.panel { border: 1px solid var(--border); border-radius: 12px; padding: 18px; background: var(--surface); min-width: 0; }
+.panel { border: none; border-radius: 12px; padding: 18px; background: var(--surface); min-width: 0; }
 .panel h2 {
     font-size: 11px;
     font-weight: 700;
@@ -701,7 +816,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
 }
-.item:hover { background: var(--bg); border-color: var(--border); }
+.item:hover { background: var(--bg); }
 .item.active { background: var(--pink); border-color: var(--pink); }
 .item.active code,
 .item.active .item-desc { color: #111111; }
@@ -790,7 +905,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     color: var(--muted);
     background: var(--bg);
     border: 1px solid var(--border);
-    border-radius: 5px;
+    border-radius: 999px;
     padding: 1px 7px;           /* padding vertical mínimo: la pastilla deja de "crecer" sobre la línea */
     align-self: center;         /* la pastilla se centra respecto a la línea de texto */
     transform: translateY(-0.5px);
@@ -807,12 +922,22 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
 }
 .field-desc { font-family: var(--sans); font-size: 12.5px; color: var(--muted); line-height: 1.45; margin: 0 0 6px; }
 .field input,
-.field select,
+.field select {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 999px;
+    font-size: 14px;
+    background: var(--input-bg);
+    color: var(--text);
+    font-family: var(--sans);
+}
+
 .field textarea {
     width: 100%;
-    padding: 9px 11px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
     font-size: 14px;
     background: var(--input-bg);
     color: var(--text);
@@ -855,9 +980,9 @@ textarea {
     width: 100%;
     font-family: var(--mono);
     font-size: 13px;
-    padding: 11px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 16px;
     background: var(--input-bg);
     color: var(--text);
     resize: vertical;
@@ -877,7 +1002,6 @@ textarea {
     font-size: 12px;
     line-height: 1.55;
     max-height: 440px;
-    border: 1px solid var(--border);
 }
 
 .hint {
@@ -929,7 +1053,7 @@ textarea {
 /* ── Consola de actividad ── */
 .console {
     margin-top: 22px;
-    border: 1px solid var(--border);
+    border: none;
     border-radius: 12px; overflow: hidden;
     background: var(--code-bg);
 }
@@ -992,6 +1116,17 @@ textarea {
     margin-left: auto;
     margin-right: auto;
 }
+
+.inspector-lead {
+    font-family: var(--serif);
+    font-size: 19px;
+    line-height: 1.6;
+    color: var(--muted);
+    text-align: center;
+    max-width: 56ch;
+    margin: 0 auto 20px;
+}
+.inspector-lead strong { color: var(--text); }
 
 /* Centra el texto en las páginas de contenido (no en el inspector). */
 .prose {

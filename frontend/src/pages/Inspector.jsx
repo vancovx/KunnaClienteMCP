@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ConsoleLog from "../components/ConsoleLog";
+import Dropdown from "../components/Dropdown";
 
 const API = "http://localhost:4000/api";
 
@@ -75,28 +76,6 @@ function coerceValues(fields, values) {
     return out;
 }
 
-// Extrae los bloques de texto de una respuesta MCP para mostrarlos de forma
-// legible. Devuelve null si la respuesta no tiene la forma esperada, en cuyo
-// caso el componente cae al JSON crudo (importante para un cliente genérico:
-// bloques image, resource, etc. no se pierden nunca).
-function extractTextBlocks(result) {
-    // Respuesta de tool: { content: [{ type: "text", text }, ...] }
-    if (Array.isArray(result?.content)) {
-        const blocks = result.content
-            .filter((b) => b.type === "text" && typeof b.text === "string")
-            .map((b) => ({ label: null, text: b.text }));
-        return blocks.length ? blocks : null;
-    }
-    // Respuesta de prompt: { messages: [{ role, content: { type: "text", text } }, ...] }
-    if (Array.isArray(result?.messages)) {
-        const blocks = result.messages
-            .filter((m) => m.content?.type === "text")
-            .map((m) => ({ label: m.role, text: m.content.text }));
-        return blocks.length ? blocks : null;
-    }
-    return null;
-}
-
 export default function Inspector() {
     const [form, setForm] = useState({
         transport: "http",
@@ -115,7 +94,6 @@ export default function Inspector() {
 
     const [calling, setCalling] = useState(false);
     const [result, setResult] = useState(null);
-    const [resultView, setResultView] = useState("pretty"); // "pretty" | "json"
     const [callError, setCallError] = useState("");
 
     // Log de actividad para la consola.
@@ -190,7 +168,6 @@ export default function Inspector() {
         setArgsText("{}");
         setRawMode(false);
         setResult(null);
-        setResultView("pretty");
         setCallError("");
     }
 
@@ -208,7 +185,6 @@ export default function Inspector() {
         setCalling(true);
         setCallError("");
         setResult(null);
-        setResultView("pretty");
         try {
             let args;
             if (rawMode) {
@@ -244,9 +220,6 @@ export default function Inspector() {
         }
     }
 
-    // Bloques de texto extraídos del resultado (null → solo vista JSON).
-    const textBlocks = result ? extractTextBlocks(result) : null;
-
     return (
         <div className="inspector">
             <div className="inspector-head">
@@ -258,11 +231,23 @@ export default function Inspector() {
                 )}
             </div>
 
+            {!connected && (
+                <p className="inspector-lead">
+                    Introduce la URL de un servidor MCP y pulsa <strong>Conectar</strong> para
+                    explorar y probar sus tools y prompts.
+                </p>
+            )}
+
             <section className="connect-bar">
-                <select value={form.transport} onChange={(e) => update("transport", e.target.value)} disabled={connected}>
-                    <option value="http">HTTP</option>
-                    <option value="sse">SSE</option>
-                </select>
+                <Dropdown
+                    value={form.transport}
+                    onChange={(v) => update("transport", v)}
+                    disabled={connected}
+                    options={[
+                        { value: "http", label: "HTTP" },
+                        { value: "sse", label: "SSE" },
+                    ]}
+                />
                 <input
                     className="url"
                     placeholder="http://localhost:3001/mcp"
@@ -270,10 +255,15 @@ export default function Inspector() {
                     onChange={(e) => update("url", e.target.value)}
                     disabled={connected}
                 />
-                <select value={form.authType} onChange={(e) => update("authType", e.target.value)} disabled={connected}>
-                    <option value="none">Sin auth</option>
-                    <option value="bearer">Bearer</option>
-                </select>
+                <Dropdown
+                    value={form.authType}
+                    onChange={(v) => update("authType", v)}
+                    disabled={connected}
+                    options={[
+                        { value: "none", label: "Sin auth" },
+                        { value: "bearer", label: "Bearer" },
+                    ]}
+                />
                 {form.authType === "bearer" && (
                     <input
                         className="token"
@@ -386,23 +376,24 @@ export default function Inspector() {
                                                 <p className="field-desc">{f.description}</p>
                                             )}
                                             {f.enum ? (
-                                                <select
+                                                <Dropdown
                                                     value={fieldValues[f.name] ?? ""}
-                                                    onChange={(e) => setField(f.name, e.target.value)}
-                                                >
-                                                    <option value="">— elige —</option>
-                                                    {f.enum.map((opt) => (
-                                                        <option key={opt} value={opt}>{opt}</option>
-                                                    ))}
-                                                </select>
+                                                    onChange={(v) => setField(f.name, v)}
+                                                    placeholder="— elige —"
+                                                    options={f.enum.map((opt) => ({
+                                                        value: opt,
+                                                        label: opt,
+                                                    }))}
+                                                />
                                             ) : f.type === "boolean" ? (
-                                                <select
+                                                <Dropdown
                                                     value={fieldValues[f.name] ?? "false"}
-                                                    onChange={(e) => setField(f.name, e.target.value)}
-                                                >
-                                                    <option value="false">false</option>
-                                                    <option value="true">true</option>
-                                                </select>
+                                                    onChange={(v) => setField(f.name, v)}
+                                                    options={[
+                                                        { value: "false", label: "false" },
+                                                        { value: "true", label: "true" },
+                                                    ]}
+                                                />
                                             ) : f.type === "object" || f.type === "array" ? (
                                                 <textarea
                                                     className="field-json"
@@ -441,64 +432,15 @@ export default function Inspector() {
                             </button>
 
                             {callError && <div className="banner error">{callError}</div>}
-
                             {result && (
                                 <div className="result-block">
-                                    <div className="result-head">
-                                        <label>Resultado</label>
-                                        {textBlocks && (
-                                            <div className="view-toggle">
-                                                <button
-                                                    type="button"
-                                                    className={resultView === "pretty" ? "active" : ""}
-                                                    onClick={() => setResultView("pretty")}
-                                                >
-                                                    Legible
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    className={resultView === "json" ? "active" : ""}
-                                                    onClick={() => setResultView("json")}
-                                                >
-                                                    JSON
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {textBlocks && resultView === "pretty" ? (
-                                        <div className="result pretty">
-                                            {textBlocks.map((b, i) => (
-                                                <div key={i} className="text-block">
-                                                    {b.label && <span className="role-pill">{b.label}</span>}
-                                                    <div className="text-content">{b.text}</div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <pre className="result">{JSON.stringify(result, null, 2)}</pre>
-                                    )}
+                                    <label>Resultado</label>
+                                    <pre className="result">{JSON.stringify(result, null, 2)}</pre>
                                 </div>
                             )}
                         </section>
                     )}
                 </main>
-            )}
-
-            {!connected && (
-                <div className="empty-state">
-                    <div className="empty-icon" aria-hidden="true">🔌</div>
-                    <h2 className="empty-title">Conecta un servidor para empezar</h2>
-                    <p className="empty-sub">
-                        Introduce la URL de un servidor MCP arriba y pulsa <strong>Conectar</strong>.
-                        Verás aquí sus tools, prompts y recursos, y podrás probarlos uno a uno.
-                    </p>
-                    <ol className="empty-steps">
-                        <li><span className="step-num pink">1</span> Elige transporte y URL</li>
-                        <li><span className="step-num lime">2</span> Conecta</li>
-                        <li><span className="step-num ghost">3</span> Explora y ejecuta</li>
-                    </ol>
-                </div>
             )}
 
             <ConsoleLog entries={log} onClear={() => setLog([])} />
