@@ -696,7 +696,7 @@ body {
     white-space: nowrap;
 }
 .dd-option.is-highlight { background: var(--bg); }
-.dd-option.is-selected { background: var(--pink); color: #111111; font-weight: 600; }
+.dd-option.is-selected { background: var(--lime); color: #111111; font-weight: 600; }
 
 /* En el formulario de parámetros el dropdown ocupa todo el ancho */
 .field .dd { width: 100%; }
@@ -779,7 +779,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: var(--muted);
+    color: var(--text);
     margin: 0 0 10px;
     display: flex;
     align-items: center;
@@ -943,7 +943,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    color: var(--muted);
+    color: var(--text);
 }
 .link-btn {
     font-family: var(--sans);
@@ -964,8 +964,8 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     display: flex;
     align-items: baseline;      /* alinea por la base del texto, no por el centro de la pastilla */
     flex-wrap: wrap;
-    gap: 6px 8px;               /* un poco menos de gap vertical al envolver */
-    margin: 0 0 6px;
+    gap: 8px 18px;               /* más aire horizontal entre nombre, tipo y "obligatorio" */
+    margin: 0 0 8px;
     text-transform: none;
     letter-spacing: 0;
     line-height: 1.5;
@@ -974,7 +974,7 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     font-family: var(--mono);
     font-size: 13.5px;
     font-weight: 700;
-    color: var(--text);
+    color: var(--muted);
     line-height: 1.5;
 }
 .field-type {
@@ -982,10 +982,11 @@ button.danger:hover { background: transparent; border-color: var(--danger); }
     font-family: var(--mono);
     line-height: 1.5;
     color: var(--muted);
-    background: var(--bg);
+    background: var(--input-bg);
     border: 1px solid var(--border);
     border-radius: 999px;
-    padding: 1px 7px;           /* padding vertical mínimo: la pastilla deja de "crecer" sobre la línea */
+    padding: 3px 12px;          /* más aire interno que antes */
+    margin: 0 6px;               /* fallback si el gap del flex no separa lo suficiente */
     align-self: center;         /* la pastilla se centra respecto a la línea de texto */
     transform: translateY(-0.5px);
 }
@@ -1247,6 +1248,9 @@ textarea {
     font-weight: 600;
 }
 
+/* white-space: pre-wrap → los \n del texto se renderizan como saltos
+   de línea reales, y las líneas largas envuelven en vez de hacer scroll
+   horizontal (a diferencia del <pre> del JSON, que usa white-space: pre). */
 .result.pretty {
     font-family: var(--serif);
     font-size: 14.5px;
