@@ -87,7 +87,7 @@ export default function Inspector() {
     const [error, setError] = useState("");
     const [server, setServer] = useState(null);
 
-    const [selected, setSelected] = useState(null); // { kind, item }
+    const [selected, setSelected] = useState(null); 
     const [fieldValues, setFieldValues] = useState({});
     const [rawMode, setRawMode] = useState(false);
     const [argsText, setArgsText] = useState("{}");

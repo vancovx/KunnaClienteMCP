@@ -3,17 +3,14 @@ import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
 
-// Construye los headers HTTP a partir de la opción de auth que elija el usuario.
-// type: "none" | "bearer" | "custom"
+
 function buildHeaders(auth = { type: "none" }) {
     if (auth?.type === "bearer") return { Authorization: `Bearer ${auth.token}` };
     if (auth?.type === "custom") return { ...(auth.headers ?? {}) };
     return {};
 }
 
-// Devuelve el transporte adecuado según la config de conexión.
-// Esto es lo que hace que el cliente sea GENÉRICO: el usuario elige a qué
-// servidor y por qué transporte conectarse en tiempo de ejecución.
+
 function buildTransport(config) {
     switch (config.transport) {
         case "http":
@@ -28,9 +25,9 @@ function buildTransport(config) {
 
         case "stdio":
             return new StdioClientTransport({
-                command: config.command,      // ej: "node"
-                args: config.args ?? [],      // ej: ["server.js"]
-                env: config.env,              // variables de entorno opcionales
+                command: config.command,      
+                args: config.args ?? [],     
+                env: config.env,              
             });
 
         default:
@@ -38,8 +35,7 @@ function buildTransport(config) {
     }
 }
 
-// Mantiene UNA conexión MCP activa. De momento es suficiente para arrancar;
-// el soporte multi-sesión (varias conexiones a la vez) lo añadiremos después.
+// Mantiene UNA conexión MCP activa.
 export class McpConnection {
     constructor() {
         this.client = null;
@@ -51,7 +47,6 @@ export class McpConnection {
     }
 
     async connect(config) {
-        // Si ya había una conexión, la cerramos antes de abrir otra.
         if (this.client) await this.disconnect();
 
         this.transport = buildTransport(config);
@@ -60,10 +55,8 @@ export class McpConnection {
             { capabilities: {} }
         );
 
-        // connect() hace internamente el initialize + notifications/initialized
         await this.client.connect(this.transport);
 
-        // Descubrimiento por capacidades: solo pedimos lo que el servidor declara.
         const capabilities = this.client.getServerCapabilities() ?? {};
         const [tools, prompts, resources] = await Promise.all([
             capabilities.tools     ? this.client.listTools()     : { tools: [] },
@@ -72,7 +65,7 @@ export class McpConnection {
         ]);
 
         return {
-            serverInfo: this.client.getServerVersion(),  // { name, version }
+            serverInfo: this.client.getServerVersion(),  
             capabilities,
             tools: tools.tools,
             prompts: prompts.prompts,
