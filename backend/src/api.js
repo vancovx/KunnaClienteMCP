@@ -39,6 +39,17 @@ app.post("/api/call", async (req, res) => {
     }
 });
 
+// Obtener un prompt.                "arguments": {} }
+app.post("/api/prompt", async (req, res) => {
+    try {
+        const { name, arguments: args } = req.body;
+        const result = await connection.getPrompt(name, args ?? {});
+        res.json(result);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 // Cerrar la conexión activa.
 app.post("/api/disconnect", async (req, res) => {
     await connection.disconnect();
