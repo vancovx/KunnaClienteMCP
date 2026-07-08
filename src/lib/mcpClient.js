@@ -1,15 +1,12 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
 import { SSEClientTransport } from "@modelcontextprotocol/sdk/client/sse.js";
-import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
-
 
 function buildHeaders(auth = { type: "none" }) {
     if (auth?.type === "bearer") return { Authorization: `Bearer ${auth.token}` };
     if (auth?.type === "custom") return { ...(auth.headers ?? {}) };
     return {};
 }
-
 
 function buildTransport(config) {
     switch (config.transport) {
@@ -23,19 +20,12 @@ function buildTransport(config) {
                 requestInit: { headers: buildHeaders(config.auth) },
             });
 
-        case "stdio":
-            return new StdioClientTransport({
-                command: config.command,      
-                args: config.args ?? [],     
-                env: config.env,              
-            });
-
         default:
-            throw new Error(`Transporte no soportado: ${config.transport}`);
+            throw new Error(`Transporte no soportado en navegador: ${config.transport}`);
     }
 }
 
-// Mantiene UNA conexión MCP activa.
+// Mantiene UNA conexión MCP activa en el frontend.
 export class McpConnection {
     constructor() {
         this.client = null;
@@ -51,7 +41,7 @@ export class McpConnection {
 
         this.transport = buildTransport(config);
         this.client = new Client(
-            { name: "mi-inspector-tfg", version: "0.1.0" },
+            { name: "mi-inspector-tfg-web", version: "0.1.0" },
             { capabilities: {} }
         );
 
@@ -67,9 +57,9 @@ export class McpConnection {
         return {
             serverInfo: this.client.getServerVersion(),  
             capabilities,
-            tools: tools.tools,
-            prompts: prompts.prompts,
-            resources: resources.resources,
+            tools: tools.tools || [],
+            prompts: prompts.prompts || [],
+            resources: resources.resources || [],
         };
     }
 
@@ -84,7 +74,13 @@ export class McpConnection {
     }
 
     async disconnect() {
-        if (this.client) await this.client.close();
+        if (this.client) {
+            try {
+                await this.client.close();
+            } catch (err) {
+                console.warn("Error al cerrar conexión MCP:", err);
+            }
+        }
         this.client = null;
         this.transport = null;
     }

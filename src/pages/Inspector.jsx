@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import ConsoleLog from "../components/ConsoleLog";
 import Dropdown from "../components/Dropdown";
-
-const API = "http://localhost:4000/api";
+import { McpConnection } from "../lib/mcpClient";
 
 /* ── Helpers de esquema ────────────────────────────────────────────── */
 function schemaToFields(schema) {
@@ -99,6 +98,20 @@ export default function Inspector() {
     // Log de actividad para la consola.
     const [log, setLog] = useState([]);
 
+    const connectionRef = useRef(null);
+    if (!connectionRef.current) {
+        connectionRef.current = new McpConnection();
+    }
+    const connection = connectionRef.current;
+
+    useEffect(() => {
+        return () => {
+            if (connectionRef.current) {
+                connectionRef.current.disconnect();
+            }
+        };
+    }, []);
+
     const update = (k, v) => setForm((f) => ({ ...f, [k]: v }));
     const connected = status === "connected";
 
@@ -114,31 +127,31 @@ export default function Inspector() {
         : [];
 
     async function connect() {
-            if (form.authType === "bearer" && !form.token.trim()) {
-                setStatus("error");
-                setError("Has elegido auth Bearer pero no has introducido ningún token.");
-                pushLog("err", "← error", "token vacío");
-                return; 
-            }
+        if (form.authType === "bearer" && !form.token.trim()) {
+            setStatus("error");
+            setError("Has elegido auth Bearer pero no has introducido ningún token.");
+            pushLog("err", "← error", "token vacío");
+            return; 
+        }
 
         setStatus("connecting");
         setError("");
         setServer(null);
         setSelected(null);
         setResult(null);
-        pushLog("req", "→ POST", `/connect ${form.url}`);
+        pushLog("req", "→ MCP", `conectando a ${form.url} (${form.transport})`);
         try {
             const auth =
                 form.authType === "bearer"
                     ? { type: "bearer", token: form.token }
                     : { type: "none" };
-            const res = await fetch(`${API}/connect`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ transport: form.transport, url: form.url, auth }),
+            
+            const data = await connection.connect({
+                transport: form.transport,
+                url: form.url,
+                auth
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.cause || data.error || "Error desconocido");
+
             setServer(data);
             setStatus("connected");
             pushLog(
@@ -149,15 +162,19 @@ export default function Inspector() {
                     ` · ${data.tools.length} tools, ${data.prompts.length} prompts`
             );
         } catch (e) {
-            setError(e.message);
+            let msg = e.message;
+            if (msg.includes("Failed to fetch") || msg.includes("fetch failed") || e.name === "TypeError") {
+                msg = `${e.message}. Esto suele deberse a un error de red o a que el servidor remoto no tiene configurado CORS para permitir peticiones desde este origen web.`;
+            }
+            setError(msg);
             setStatus("error");
-            pushLog("err", "← error", e.message);
+            pushLog("err", "← error", msg);
         }
     }
 
     async function disconnect() {
-        pushLog("req", "→ POST", "/disconnect");
-        await fetch(`${API}/disconnect`, { method: "POST" });
+        pushLog("req", "→ MCP", "desconectando");
+        await connection.disconnect();
         setServer(null);
         setSelected(null);
         setResult(null);
@@ -204,24 +221,28 @@ export default function Inspector() {
                 args = coerceValues(fields, fieldValues);
             }
 
-            const endpoint = selected.kind === "tool" ? "/call" : "/prompt";
             pushLog(
                 "req",
                 selected.kind === "tool" ? "→ CALL" : "→ PROMPT",
                 `${selected.item.name} ${JSON.stringify(args)}`
             );
-            const res = await fetch(`${API}${endpoint}`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name: selected.item.name, arguments: args }),
-            });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.cause || data.error || "Error en la llamada");
+            
+            let data;
+            if (selected.kind === "tool") {
+                data = await connection.callTool(selected.item.name, args);
+            } else {
+                data = await connection.getPrompt(selected.item.name, args);
+            }
+
             setResult(data);
             pushLog("ok", "← ok", "respuesta recibida");
         } catch (e) {
-            setCallError(e.message);
-            pushLog("err", "← error", e.message);
+            let msg = e.message;
+            if (msg.includes("Failed to fetch") || msg.includes("fetch failed") || e.name === "TypeError") {
+                msg = `${e.message}. Puede ser un error de CORS o red en la llamada externa.`;
+            }
+            setCallError(msg);
+            pushLog("err", "← error", msg);
         } finally {
             setCalling(false);
         }
