@@ -41,7 +41,7 @@ export default function Home() {
                 <p className="home__lead">
                     Kunna es un cliente <strong>Model Context Protocol</strong> diseñado para desarrolladores. 
                     Conéctate a cualquier servidor MCP, visualiza al instante sus tools, prompts y resources 
-                     y pruébalos para validar que todo funcione correctamente.
+                    y pruébalos para validar que todo funcione correctamente.
                 </p>
 
                 <div className="home__actions">

@@ -24,6 +24,8 @@
 }
 
 :root[data-theme="light"] .vfolder { --vcard: #e3d4f5; }
+:root[data-theme="light"] .dbody { --vcard: #e3d4f5; }
+:root[data-theme="light"] .dtab.is-active { --vcard: #e3d4f5; }
 :root[data-theme="light"] .dfolder { --dcard: #e3d4f5; }
 
 :root[data-theme="dark"] {
@@ -308,17 +310,17 @@ body {
 /* ── Carpeta ──────────────────────────────────────────────────────── */
 .dfolder {
     position: relative;
-    --r: 16px;                 /* radio del hombro cóncavo */
-    --dcard: var(--surface);
+    --r: 16px;                 
+    --dcard: var(--);
 }
 
 .dtabs {
     display: flex;
     gap: 6px;
-    padding: 0 26px;                        /* deja ver las esquinas del cuerpo */
-    margin-bottom: calc(-1 * var(--r));     /* las pestañas se montan sobre el cuerpo */
+    padding: 0 26px;                        
+    margin-bottom: calc(-1 * var(--r));    
     position: relative;
-    overflow-x: auto;                       /* en móvil: scroll en vez de romper */
+    overflow-x: auto;                       
     scrollbar-width: none;
 }
 .dtabs::-webkit-scrollbar { display: none; }
@@ -348,30 +350,30 @@ body {
     background: var(--dtab-bg);
 }
 
-/* Color propio de cada pestaña (fijo en ambos temas, como los chips de la app) */
-.dtab-pink   { --dtab-bg: var(--pink);   --dtab-ink: #111111; }
-.dtab-yellow { --dtab-bg: var(--yellow); --dtab-ink: #111111; }
-.dtab-lime   { --dtab-bg: var(--lime);   --dtab-ink: #111111; }
-.dtab-ink    { --dtab-bg: var(--pink);    --dtab-ink: #111111; }
+.dtab-pink,
+.dtab-yellow,
+.dtab-lime,
+.dtab-ink    { --dtab-bg: var(--pink); --dtab-ink: #111111; --vcard: var(--surface); }
 
 .dtab:not(.is-active):hover {
     transform: translateY(-3px);
     filter: brightness(0.95);
 }
 
-/* Pestaña activa: del color del cuerpo y por ENCIMA de él */
 .dtab.is-active {
     z-index: 3;
-    --dtab-bg: var(--dcard);
+    --dtab-bg: var(--vcard);
     --dtab-ink: var(--text);
+    --vcard: var(--surface);
     cursor: default;
 }
 
 /* ── Cuerpo de la carpeta ─────────────────────────────────────────── */
 .dbody {
     position: relative;
-    z-index: 2;                 /* por encima de las inactivas, por debajo de la activa */
-    background: var(--dcard);
+    z-index: 2;                
+    background: var(--vcard);
+    --vcard: var(--surface);
     border-radius: 18px;
     padding: 32px 30px 36px;
     min-height: 320px;
@@ -433,16 +435,16 @@ body {
     .dtab { transition: none; }
 }
 
-/* ═══ ¿Qué es MCP? · Pestañas tipo carpeta (LATERALES / verticales) ══ */
+
 .vfolder {
     position: relative;
-    --r: 16px;                 /* radio del hombro cóncavo */
+    --r: 16px;                 
     --vcard: var(--surface);
     display: flex;
     align-items: stretch;
     max-width: 760px;
     margin: 10px auto 28px;
-    text-align: left;          /* anula el centrado de .prose dentro de la carpeta */
+    text-align: left;          
 }
 
 /* Columna de pestañas a la izquierda */
