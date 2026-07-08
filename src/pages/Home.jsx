@@ -6,11 +6,8 @@ import pieceCenter from "../assets/puzzle-center.png";
 import pieceRight from "../assets/puzzle-right.png";
 
 
-/* Una pieza de puzle: imagen de fondo + texto centrado encima.
-   El borde grueso y la sombra ya vienen dibujados en el propio PNG,
-   incluso girada se ve limpio (cosa que con clip-path no se conseguía). */
 function PuzzlePiece({
-    variant = "ai",          // ai | mcp | data
+    variant = "ai",         
     src,
     label,
     rotate = 0,
@@ -42,10 +39,9 @@ export default function Home() {
                 </h1>
 
                 <p className="home__lead">
-                    Kunna es un cliente del <strong>Model Context Protocol</strong>:
-                    el puente que conecta tu IA con tus herramientas y datos.
-                    Conéctate a cualquier servidor, inspecciona sus tools y prompts
-                    y pruébalos al instante.
+                    Kunna es un cliente <strong>Model Context Protocol</strong> diseñado para desarrolladores. 
+                    Conéctate a cualquier servidor MCP, visualiza al instante sus tools, prompts y resources 
+                     y pruébalos para validar que todo funcione correctamente.
                 </p>
 
                 <div className="home__actions">

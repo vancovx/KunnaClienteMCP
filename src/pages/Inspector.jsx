@@ -261,8 +261,8 @@ export default function Inspector() {
 
             {!connected && (
                 <p className="inspector-lead">
-                    Introduce la URL de un servidor MCP y pulsa <strong>Conectar</strong> para
-                    explorar y probar sus tools y prompts.
+                    Introduce la URL de cualquier servidor MCP y pulsa conectar para
+                    explorar y probar las tools, prompts y resources.
                 </p>
             )}
 
