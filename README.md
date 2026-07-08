@@ -17,7 +17,7 @@ Aunque nace como pieza para cerrar el ciclo del servidor MCP, el cliente no est�
 - **Ejecuta y muestra la respuesta.** Llama a la tool o resuelve el prompt y presenta el resultado formateado, con una **consola de actividad** que registra cada petición y respuesta.
 - **Explica el contexto.** Incluye páginas divulgativas (*¿Qué es MCP?* y *¿Por qué?*) que sitúan la arquitectura y la motivación del proyecto.
 
-![Página de inicio de Kunna](/public/inspector.png)
+![Página de inicio de Kunna](/public/Inspector.png)
 
 ## Stack tecnológico
 
