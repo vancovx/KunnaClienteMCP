@@ -1,22 +1,89 @@
 import { useState, useRef } from "react";
+import fotoPerfil from "../assets/vanessa-perfil.jpg";
+
+const GithubIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+        0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+        -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07
+        -.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2
+        -.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2
+        .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15
+        0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0
+        .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+    </svg>
+);
+
+const LinkedinIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M20.45 20.45h-3.56v-5.57c0-1.33-.03-3.03-1.85-3.03-1.86 0-2.15
+        1.45-2.15 2.94v5.66H9.33V9h3.42v1.56h.05c.48-.9 1.64-1.85 3.38-1.85
+        3.61 0 4.28 2.38 4.28 5.47v6.27zM5.34 7.43a2.07 2.07 0 1 1 0-4.14
+        2.07 2.07 0 0 1 0 4.14zM7.12 20.45H3.56V9h3.56v11.45z" />
+    </svg>
+);
+
+const MailIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="4" width="20" height="16" rx="2" />
+        <path d="m22 6-10 7L2 6" />
+    </svg>
+);
 
 const FOLDERS = [
     {
         title: "Sobre mí",
         tab: "dtab-pink",
         content: (
-            <>
-                <p>
-                    Soy <strong>Vanessa Covrig Roibu</strong>, estudiante de Ingeniería Multimedia en la Universidad de Alicante. 
-                    Este cliente MCP es una pequeña parte del
-                    resultado de mi Trabajo de Fin de Grado.
-                </p>
-                <p>
-                    Nace del interés por explorar la integración entre modelos de
-                    lenguaje (LLMs) y sistemas externos mediante protocolos
-                    estandarizados de comunicación.
-                </p>
-            </>
+            <div className="dabout">
+                <div className="dabout-text">
+                    <p>
+                        Soy <strong>Vanessa Covrig Roibu</strong>, estudiante de último curso de Ingeniería Multimedia 
+                        en la Universidad de Alicante. Este cliente MCP es una pequeña parte del
+                        resultado de mi Trabajo de Fin de Grado.
+                    </p>
+                    <p>
+                        Nace del interés por explorar la integración entre modelos de
+                        lenguaje (LLMs) y sistemas externos mediante protocolos
+                        estandarizados de comunicación.
+                    </p>
+
+                    <a
+                        className="icon-btn"
+                        href="https://github.com/vancovx"
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="GitHub"
+                        title="GitHub"
+                    >
+                        <GithubIcon />
+                    </a>
+                    <a
+                        className="icon-btn"
+                        href="https://www.linkedin.com/in/vanessa-covrig-19161229b"
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label="LinkedIn"
+                        title="LinkedIn"
+                    >
+                        <LinkedinIcon />
+                    </a>
+                    <a
+                        className="icon-btn"
+                        href="mailto:[vanessacovrig7]@gmail.com"
+                        aria-label="Email"
+                        title="Email"
+                    >
+                        <MailIcon />
+                    </a>
+                </div>
+                <img
+                    src={fotoPerfil}
+                    alt="Vanessa Covrig Roibu"
+                    className="dabout-photo"
+                />
+            </div>
         ),
     },
     {
@@ -25,14 +92,28 @@ const FOLDERS = [
         content: (
             <>
                 <p>
-                    Una interfaz visual e intuitiva para conectarse a servidores del{" "}
-                    <em>Model Context Protocol</em>, inspeccionar las tools, prompts y
-                    recursos que exponen y probarlos de forma interactiva.
+                    Este Trabajo de Fin de Grado consiste en el diseño e implementación de un{" "}
+                    <strong>servidor MCP</strong> (<em>Model Context Protocol</em>) en el contexto
+                    de plataformas <strong>smart univeristy</strong>, más concretamente integrado con{" "}
+                    <strong>Kunna</strong>, el proyecto de universidad inteligente de la{" "}
+                    <a href="https://smart.ua.es/" target="_blank" rel="noreferrer">
+                        Universidad de Alicante
+                    </a>
+                    
                 </p>
                 <p>
-                    Como caso de estudio principal, el sistema interactúa con el
-                    servidor de datos IoT desarrollado para el campus.
+                    El servidor expone los datos IoT del campus universitario como herramientas,
+                    prompts y recursos accesibles para modelos de lenguaje. Este cliente visual
+                    permite conectarse a dicho servidor, explorar lo que ofrece y probarlo de
+                    forma interactiva.
+                
                 </p>
+                <div className="dabout-text">
+                <a className="foot-gh" href="https://github.com/vancovx/KunnaServidorMCP" target="_blank" rel="noreferrer">
+                        <GithubIcon /> Servidor MCP
+                </a>
+                </div>
+
             </>
         ),
     },
@@ -48,12 +129,12 @@ const FOLDERS = [
                 </p>
                 <ul>
                     <li>
-                        <strong>Protocolo de extremo a extremo:</strong> picar servidor y
-                        cliente es la única forma de asimilar el ciclo de vida de MCP —
+                        <strong>Protocolo de extremo a extremo:</strong> desarrollar servidor y
+                        cliente es la única forma de asimilar el ciclo de vida de MCP
                         negociación de capacidades, JSON-RPC y gestión de contextos.
                     </li>
                     <li>
-                        <strong>Depuración sin cajas negras:</strong> un cliente propio
+                        <strong>Depuración:</strong> un cliente propio
                         deja inspeccionar logs y flujos en tiempo real con el servidor IoT
                         sin la opacidad de los clientes comerciales.
                     </li>
@@ -63,24 +144,6 @@ const FOLDERS = [
                     </li>
                 </ul>
             </>
-        ),
-    },
-    {
-        title: "Contacto",
-        tab: "dtab-ink",
-        content: (
-            <p>
-                <strong>GitHub:</strong>{" "}
-                <a href="https://github.com/[TuUsuario]" target="_blank" rel="noreferrer">
-                    github.com/[TuUsuario]
-                </a>{" "}
-                · <strong>LinkedIn:</strong>{" "}
-                <a href="https://linkedin.com/in/[TuPerfil]" target="_blank" rel="noreferrer">
-                    linkedin.com/in/[TuPerfil]
-                </a>{" "}
-                · <strong>Email:</strong>{" "}
-                <a href="mailto:[tu-correo]@alu.ua.es">[tu-correo]@alu.ua.es</a>
-            </p>
         ),
     },
 ];

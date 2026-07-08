@@ -368,7 +368,6 @@ body {
     cursor: default;
 }
 
-/* ── Cuerpo de la carpeta ─────────────────────────────────────────── */
 .dbody {
     position: relative;
     z-index: 2;                
@@ -416,8 +415,35 @@ body {
 }
 .dpanel strong { color: var(--text); font-weight: 700; }
 .dpanel em { color: var(--text); }
-.dpanel a { color: var(--accent); font-weight: 700; text-decoration: none; }
+.dpanel a { color: var(--pink); font-weight: 700; text-decoration: none; }
 .dpanel a:hover { text-decoration: underline; }
+
+/* ── Panel "Sobre mí": texto + foto ──────────────────────────────────── */
+.dabout {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+.dabout-text { flex: 1 1 auto; min-width: 0; }
+.dabout-photo {
+    flex: 0 0 auto;
+    width: 190px;
+    height: 230px;
+    object-fit: cover;
+    object-position: center 75%;
+    border-radius: 24px;
+}
+
+@media (max-width: 620px) {
+    .dabout {
+        flex-direction: column-reverse;
+        gap: 22px;
+    }
+    .dabout-photo {
+        width: 160px;
+        height: 190px;
+    }
+}
 
 /* ── Responsivo ───────────────────────────────────────────────────── */
 @media (max-width: 560px) {
